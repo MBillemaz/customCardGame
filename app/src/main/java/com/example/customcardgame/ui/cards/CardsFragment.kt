@@ -52,10 +52,10 @@ class CardsFragment : Fragment() {
 // Ajoute une carte dans la liste
 private fun onClickAddCard(context: Context, listCards: ListView, listItems: ArrayList<String>) {
 
-    listItems.add("Nouvelle carte")
-
-    var adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, listItems)
-    listCards.adapter = adapter
+//    listItems.add("Nouvelle carte")
+//
+//    var adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, listItems)
+//    listCards.adapter = adapter
 
     openCardDetails(context, "")
 }
