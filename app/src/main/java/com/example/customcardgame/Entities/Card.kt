@@ -1,11 +1,24 @@
 package com.example.customcardgame.Entities
 
-import android.media.Image
+import android.net.Uri
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 
-class Card {
+@Entity(tableName = "cards")
+data class Card (
 
-    var cardName: String = ""
-    var description: String = ""
+    @PrimaryKey
+    @NonNullg
+    var cardName: String = "",
 
-    var picture: Uri? = null
-}
+    @ColumnInfo(name = "description")
+    @Ignore
+    var description: String = "",
+
+    @ColumnInfo(name = "image")
+    @Ignore
+    var picture: String? = null
+)
