@@ -11,6 +11,7 @@ import com.peak.salut.SalutDataReceiver
 import com.peak.salut.SalutServiceData
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import kotlinx.android.synthetic.main.activity_player_room.*
 
 
 class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
@@ -21,8 +22,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_room)
 
-
-        ActivityCompat.requestPermissions(this@PlayerRoomActivity,
+        ActivityCompat.requestPermissions(this,
             arrayOf(
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.CHANGE_WIFI_STATE,
@@ -48,34 +48,44 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                 && grantResults[3] == PackageManager.PERMISSION_GRANTED
                 && grantResults[4] == PackageManager.PERMISSION_GRANTED)
             {
-
-                val dataReceiver = SalutDataReceiver(this, this)
-                val serviceData = SalutServiceData("sas", 50489, "USER")
-
-                network = MySalut(dataReceiver, serviceData, MySalutCallback(
-                    this.javaClass.simpleName,
-                    "Sorry, but this device does not support WiFi Direct."
-                ))
-                network.isRunningAsHost = false
-
-                network.discoverNetworkServices({ device ->
-                    Log.d(
-                        this.javaClass.simpleName,
-                        "A device has connected with the name " + device.deviceName
-                    )
-                    network.stopServiceDiscovery(false)
-
-                    network.registerWithHost(
-                        device,
-                        MySalutCallback(this.javaClass.simpleName, "Registered !"),
-                        MySalutCallback(this.javaClass.simpleName, "Registration failed !")
-                    )
-                }, false)
+                onRequestSuccess()
             }
         }
     }
 
+    fun onRequestSuccess() {
+        val dataReceiver = SalutDataReceiver(this, this)
+        val serviceData = SalutServiceData("CustomCardGame", 50488, "USER")
+
+        network = MySalut(dataReceiver, serviceData, MySalutCallback(
+            this.javaClass.simpleName,
+            "Sorry, but this device does not support WiFi Direct."
+        ))
+        network.isRunningAsHost = false
+
+        network.discoverNetworkServices({ device ->
+            Log.d(
+                this.javaClass.simpleName,
+                "A device has connected with the name " + device.deviceName
+            )
+            network.stopServiceDiscovery(false)
+
+            textView.text = device.deviceName
+            network.registerWithHost(
+                device,
+                MySalutCallback(this.javaClass.simpleName, "Registered !"),
+                MySalutCallback(this.javaClass.simpleName, "Registration failed !")
+            )
+        }, false)
+    }
+
+
     override fun onDataReceived(p0: Any?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        network.unregisterClient(true)
     }
 }
