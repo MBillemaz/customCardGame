@@ -7,5 +7,5 @@ class Card {
     var cardName: String = ""
     var description: String = ""
 
-    var picture: Image? = null
+    var picture: Uri? = null
 }

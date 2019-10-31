@@ -18,9 +18,13 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     lateinit var network: MySalut
 
+    lateinit var login: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_room)
+
+        login = intent.getStringExtra("login")
 
         ActivityCompat.requestPermissions(this,
             arrayOf(
@@ -56,7 +60,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
     fun onRequestSuccess() {
 
         val dataReceiver = SalutDataReceiver(this, this)
-        val serviceData = SalutServiceData("CustomCardGame", 50488, "ADMIN")
+        val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
         network = MySalut(dataReceiver, serviceData, MySalutCallback(
             this.javaClass.simpleName,
@@ -74,10 +78,9 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         network.stopNetworkService(true)
-
     }
 
     override fun onDataReceived(p0: Any?) {

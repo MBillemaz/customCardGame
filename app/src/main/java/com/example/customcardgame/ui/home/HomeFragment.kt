@@ -1,5 +1,6 @@
 package com.example.customcardgame.ui.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,41 +18,49 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 
 class HomeFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
 
-        homeViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
-
-        root.button.setOnClickListener { view ->
+        root.userRoomButton.setOnClickListener { view ->
             onUserClick()
         }
 
-        root.button2.setOnClickListener { view ->
+        root.adminRoomButton.setOnClickListener { view ->
             onAdminClick()
         }
+
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        val storedLogin = sharedPref?.getString(getString(R.string.login_key), null)
+
+        root.login.setText(storedLogin)
 
         return root
     }
 
     fun onUserClick() {
+        storeLogin()
         val intent = Intent(context, PlayerRoomActivity::class.java)
+        intent.putExtra("login", login.text.toString())
         startActivity(intent)
     }
 
     fun onAdminClick() {
+        storeLogin()
         val intent = Intent(context, AdminRoomActivity::class.java)
+        intent.putExtra("login", login.text.toString())
         startActivity(intent)
+    }
+
+    fun storeLogin() {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString(getString(R.string.login_key), login.text.toString())
+            commit()
+        }
     }
 }

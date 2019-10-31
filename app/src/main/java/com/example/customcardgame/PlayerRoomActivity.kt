@@ -11,16 +11,23 @@ import com.peak.salut.SalutDataReceiver
 import com.peak.salut.SalutServiceData
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.bluelinelabs.logansquare.LoganSquare
+import com.example.customcardgame.Entities.Card
 import kotlinx.android.synthetic.main.activity_player_room.*
+import java.io.IOException
 
 
 class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
     lateinit var network: MySalut
 
+    lateinit var login: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_room)
+
+        login = intent.getStringExtra("login")
 
         ActivityCompat.requestPermissions(this,
             arrayOf(
@@ -55,7 +62,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
     fun onRequestSuccess() {
         val dataReceiver = SalutDataReceiver(this, this)
-        val serviceData = SalutServiceData("CustomCardGame", 50488, "USER")
+        val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
         network = MySalut(dataReceiver, serviceData, MySalutCallback(
             this.javaClass.simpleName,
@@ -80,12 +87,18 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     }
 
 
-    override fun onDataReceived(p0: Any?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onDataReceived(data: Any) {
+       try {
+            val card: Card = LoganSquare.parse(data.toString(), Card::class.java)
+       }
+       catch (ex: IOException)
+       {
+           Log.e(this.javaClass.simpleName, "Failed to parse network data.");
+       }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         network.unregisterClient(true)
     }
 }
