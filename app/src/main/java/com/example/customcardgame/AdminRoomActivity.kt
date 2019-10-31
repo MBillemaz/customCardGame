@@ -12,8 +12,9 @@ import com.example.customcardgame.wifi.MySalutCallback
 import android.util.Log
 import androidx.core.app.ActivityCompat
 
+// https://github.com/incognitorobito/Salut#usage
 
-class AdminRoomActivity : AppCompatActivity(), SalutDataCallback  {
+class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     lateinit var network: MySalut
 
@@ -21,7 +22,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_room)
 
-        ActivityCompat.requestPermissions(this@AdminRoomActivity,
+        ActivityCompat.requestPermissions(this,
             arrayOf(
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.CHANGE_WIFI_STATE,
@@ -47,31 +48,39 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback  {
                 && grantResults[3] == PackageManager.PERMISSION_GRANTED
                 && grantResults[4] == PackageManager.PERMISSION_GRANTED)
             {
-                val dataReceiver = SalutDataReceiver(this, this)
-                val serviceData = SalutServiceData("sas", 50489, "ADMIN")
-
-                network = MySalut(dataReceiver, serviceData, MySalutCallback(
-                    this.javaClass.simpleName,
-                    "Sorry, but this device does not support WiFi Direct."
-                ))
-                network.isRunningAsHost = true
-
-                network.startNetworkService { device ->
-                    Log.d(
-                        this.javaClass.simpleName,
-                        device.readableName + " has connected!"
-                    )
-                }
+                onRequestSuccess()
             }
         }
     }
 
-    override fun onDataReceived(p0: Any?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun onRequestSuccess() {
+
+        val dataReceiver = SalutDataReceiver(this, this)
+        val serviceData = SalutServiceData("CustomCardGame", 50488, "ADMIN")
+
+        network = MySalut(dataReceiver, serviceData, MySalutCallback(
+            this.javaClass.simpleName,
+            "Sorry, but this device does not support WiFi Direct."
+        ))
+        network.isRunningAsHost = true
+
+        network.startNetworkService { device ->
+            Log.d(
+                this.javaClass.simpleName,
+                device.readableName + " has connected!"
+            )
+        }
+
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        network.stopNetworkService(false)
+        network.stopNetworkService(true)
+
+    }
+
+    override fun onDataReceived(p0: Any?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
