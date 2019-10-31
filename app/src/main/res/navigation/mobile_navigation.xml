@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.customcardgame.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_cards"
+        android:name="com.example.customcardgame.ui.cards.CardsFragment"
+        android:label="@string/menu_cards"
+        tools:layout="@layout/fragment_cards" />
 
     <fragment
         android:id="@+id/nav_slideshow"
