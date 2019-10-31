@@ -27,6 +27,6 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        tools:text="Paramètres" />
+        tools:text="Custom Card Game" />
 
 </LinearLayout>
