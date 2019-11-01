@@ -10,10 +10,10 @@ import com.example.customcardgame.Entities.Card
 interface CardDao {
 
     @Query("SELECT cardName FROM cards")
-    fun getAllNames(): Array<Card>
+    fun getAllNames(): Array<String>
 
     @Query("SELECT * FROM cards WHERE cardName LIKE :name LIMIT 1")
-    fun findByName(name: String): Card
+    fun findByName(name: String): Card?
 
     @Insert
     fun insertAll(vararg cards: Card)
