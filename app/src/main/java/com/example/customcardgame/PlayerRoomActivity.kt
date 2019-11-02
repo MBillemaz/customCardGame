@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.customcardgame.wifi.MySalut
-import com.example.customcardgame.wifi.MySalutCallback
 import com.peak.salut.Callbacks.SalutDataCallback
 import com.peak.salut.SalutDataReceiver
 import com.peak.salut.SalutServiceData
@@ -13,6 +12,8 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.bluelinelabs.logansquare.LoganSquare
 import com.example.customcardgame.Entities.Card
+import com.peak.salut.Callbacks.SalutCallback
+import com.peak.salut.SalutDevice
 import kotlinx.android.synthetic.main.activity_player_room.*
 import java.io.IOException
 
@@ -64,26 +65,44 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         val dataReceiver = SalutDataReceiver(this, this)
         val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
-        network = MySalut(dataReceiver, serviceData, MySalutCallback(
-            this.javaClass.simpleName,
-            "Sorry, but this device does not support WiFi Direct."
-        ))
+        network = MySalut(dataReceiver, serviceData, SalutCallback {
+            Log.d(
+                this.javaClass.simpleName,
+                "Sorry, but this device does not support WiFi Direct."
+            )
+        })
         network.isRunningAsHost = false
 
         network.discoverNetworkServices({ device ->
             Log.d(
                 this.javaClass.simpleName,
-                "A device has connected with the name " + device.deviceName
+                "A device has connected with the name " + device.instanceName
             )
-            network.stopServiceDiscovery(false)
 
-            textView.text = device.deviceName
-            network.registerWithHost(
-                device,
-                MySalutCallback(this.javaClass.simpleName, "Registered !"),
-                MySalutCallback(this.javaClass.simpleName, "Registration failed !")
-            )
+            textView.text = device.instanceName
+
+            network.stopServiceDiscovery(false)
         }, false)
+    }
+
+    fun connectToHost(device: SalutDevice) {
+        var i = 0
+        network.registerWithHost(
+            device,
+            SalutCallback {
+                Log.d(
+                    this.javaClass.simpleName,
+                    "Registered !"
+                )
+            },
+            SalutCallback {
+                if(i < 5) {
+                    connectToHost(device)
+                } else {
+                    textView.text = "Cannot connect to host..."
+                }
+            }
+        )
     }
 
 
@@ -99,6 +118,6 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
     override fun onStop() {
         super.onStop()
-        network.unregisterClient(true)
+        network.unregisterClient(false)
     }
 }

@@ -8,9 +8,10 @@ import com.peak.salut.Callbacks.SalutDataCallback
 import com.peak.salut.SalutServiceData
 import com.peak.salut.SalutDataReceiver
 import com.example.customcardgame.wifi.MySalut
-import com.example.customcardgame.wifi.MySalutCallback
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.peak.salut.Callbacks.SalutCallback
+import com.peak.salut.SalutDevice
 
 // https://github.com/incognitorobito/Salut#usage
 
@@ -19,6 +20,8 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
     lateinit var network: MySalut
 
     lateinit var login: String
+
+    val deviceList: ArrayList<SalutDevice> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,10 +65,12 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         val dataReceiver = SalutDataReceiver(this, this)
         val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
-        network = MySalut(dataReceiver, serviceData, MySalutCallback(
-            this.javaClass.simpleName,
+        network = MySalut(dataReceiver, serviceData, SalutCallback {
+            Log.d(
+                this.javaClass.simpleName,
             "Sorry, but this device does not support WiFi Direct."
-        ))
+            )
+        })
         network.isRunningAsHost = true
 
         network.startNetworkService { device ->
@@ -73,6 +78,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
                 this.javaClass.simpleName,
                 device.readableName + " has connected!"
             )
+            deviceList.add(device)
         }
 
 
@@ -80,7 +86,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     override fun onStop() {
         super.onStop()
-        network.stopNetworkService(true)
+        network.stopNetworkService(false)
     }
 
     override fun onDataReceived(p0: Any?) {
