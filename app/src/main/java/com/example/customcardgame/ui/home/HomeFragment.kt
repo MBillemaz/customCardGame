@@ -42,24 +42,34 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    fun onUserClick() {
+    private fun onUserClick() {
         storeLogin()
         val intent = Intent(context, PlayerRoomActivity::class.java)
         intent.putExtra("login", login.text.toString())
         startActivity(intent)
     }
 
-    fun onAdminClick() {
+    private fun onAdminClick() {
         storeLogin()
         val intent = Intent(context, AdminRoomActivity::class.java)
         intent.putExtra("login", login.text.toString())
         startActivity(intent)
     }
 
-    fun storeLogin() {
+    private fun storeLogin() {
+
+        val loginText = login.text.toString()
+
+        // Si l'utilisateur a mal écrit son login
+        if (loginText.isNullOrBlank())
+        {
+
+        }
+        else
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+
         with (sharedPref.edit()) {
-            putString(getString(R.string.login_key), login.text.toString())
+            putString(getString(R.string.login_key), loginText)
             commit()
         }
     }
