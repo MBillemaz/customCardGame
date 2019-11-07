@@ -28,10 +28,7 @@ class CardsFragment : Fragment() {
     ): View? {
 
 
-
         val root = inflater.inflate(R.layout.fragment_cards, container, false)
-
-//        var listItems = ArrayList<String>(0)
 
 
         // Lors du click pour ajouter une carte
@@ -44,40 +41,45 @@ class CardsFragment : Fragment() {
         // Au click sur une carte
         root.listCards.setOnItemClickListener { parent, view, position, id ->
 
+            // On charge les détails
             openCardDetails(context!!, ((view as TextView).text) as String)
         }
 
+        // On reste appuyé pour supprimer les cartes
         root.listCards.setOnItemLongClickListener { parent, view, position, id ->
+
             AlertDialog.Builder(context)
-                // set message, title, and icon
+
+                // Affichage du message de confirmation de suppressino
                 .setTitle("Suppression")
                 .setMessage("Voulez vous supprimer cette carte ?")
-
                 .setPositiveButton(
-                    "Supprimer"){ dialog, _ ->
-                        //your deleting code
-                        val db = Room.databaseBuilder(context!!.applicationContext, CardDatabase::class.java, "cards")
-                            .allowMainThreadQueries()
-                            .build()
+                    "Supprimer"
+                ) { dialog, _ ->
 
-                        db.cardDao().deleteByName(((view as TextView).text) as String)
-                        loadAllCards(context!!, listCards)
-                        dialog.dismiss()
-                    }
+                    // On a cliqué sur le bouton pour confirmer la suppression
+                    val db = Room.databaseBuilder(
+                        context!!.applicationContext,
+                        CardDatabase::class.java,
+                        "cards"
+                    )
+                        .allowMainThreadQueries()
+                        .build()
+
+                    db.cardDao().deleteByName(((view as TextView).text) as String)
+                    loadAllCards(context!!, listCards)
+                    dialog.dismiss()
+                }
+
+                // Bouton pour annuler la suppresion
                 .setNegativeButton("Annuler")
-                    { dialog, which ->
-                        dialog.dismiss()
-                    }
+                { dialog, which ->
+                    dialog.dismiss()
+                }
                 .create().show()
 
             true
-
-
         }
-
-
-        // La page est chargée on affiche les cartes enregistrées
-//        loadAllCards(context!!, root.listCards)
 
         return root
     }
@@ -87,7 +89,6 @@ class CardsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-
         // On rafraichit la liste des cartes
         loadAllCards(context!!, listCards)
     }
@@ -96,10 +97,6 @@ class CardsFragment : Fragment() {
 
 // Ajoute une carte dans la liste
 private fun onClickAddCard(context: Context/*, listCards: ListView, listItems: ArrayList<String>*/) {
-
-//    listItems.add("Nouvelle carte")
-//    var adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, listItems)
-//    listCards.adapter = adapter
 
     openCardDetails(context, "")
 }
@@ -116,19 +113,22 @@ private fun openCardDetails(context: Context, cardName: String) {
 // Charge les cartes enregistrées
 private fun loadAllCards(context: Context, listCardsName: ListView) {
 
-
+    // Récupère la database
     val db = Room.databaseBuilder(context, CardDatabase::class.java, "cards")
         .allowMainThreadQueries()
         .build()
 
+    // Récupère tous les noms des cartes
     var allCardsName = db.cardDao().getAllNames()
     var listNames = ArrayList<String>(0)
 
+    // Pour chaque nom on l'enregistre dans l'adapter
     allCardsName.forEach {
 
         listNames.add(it)
     }
 
+    // On affiche l'adapter
     var adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, listNames)
     listCardsName.adapter = adapter
 }
