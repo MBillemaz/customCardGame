@@ -13,10 +13,10 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_cards" />
 
-<!--        <item-->
-<!--            android:id="@+id/nav_slideshow"-->
-<!--            android:icon="@drawable/ic_menu_slideshow"-->
-<!--            android:title="@string/menu_slideshow" />-->
+        <item
+            android:id="@+id/nav_notes"
+                android:icon="@drawable/ic_menu_notes"
+            android:title="@string/menu_notes" />
 <!--        <item-->
 <!--            android:id="@+id/nav_tools"-->
 <!--            android:icon="@drawable/ic_menu_manage"-->
