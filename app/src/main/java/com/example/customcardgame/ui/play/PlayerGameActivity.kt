@@ -12,12 +12,15 @@ import androidx.core.view.marginTop
 import com.example.customcardgame.R
 import android.graphics.BitmapFactory
 import android.util.Base64
+import org.json.JSONObject
+import java.io.File
 
 
 class PlayerGameActivity : AppCompatActivity() {
 
     private var isLongPressed = false
     private var backImageInitialTop: Int = 0
+    private val fileName = "playerImage"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,10 +29,17 @@ class PlayerGameActivity : AppCompatActivity() {
         cardName.text = intent.getStringExtra("cardName")!!
         cardDesc.text = intent.getStringExtra("cardDesc")!!
 
-        val imageString = intent.getStringExtra("cardImage")!!
-        val decodedString = Base64.decode(imageString, Base64.DEFAULT)
-        val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, imageString.length)
-        playerImage.setImageBitmap(decodedByte)
+
+        val file = File(filesDir, fileName)
+        if(file.exists()){
+            val base64Image = file.readText()
+
+            val decodedString = Base64.decode(base64Image, Base64.DEFAULT)
+            val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+            playerImage.setImageBitmap(decodedByte)
+        }
+
+
 
         backImageInitialTop = backImage.marginTop
 

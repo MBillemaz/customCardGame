@@ -10,6 +10,7 @@
         android:id="@+id/playerImage"
         android:layout_width="354dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintBottom_toBottomOf="@+id/backImage"
         app:layout_constraintStart_toStartOf="@+id/backImage"
@@ -39,6 +40,7 @@
         android:id="@+id/cardDesc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="@+id/backImage"
         app:layout_constraintStart_toStartOf="@+id/backImage"
         app:layout_constraintTop_toBottomOf="@+id/cardName" />

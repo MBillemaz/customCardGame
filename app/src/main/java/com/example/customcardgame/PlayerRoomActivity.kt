@@ -19,6 +19,8 @@ import com.example.customcardgame.ui.play.PlayerGameActivity
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
 import kotlinx.android.synthetic.main.activity_player_room.*
+import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 
 
@@ -27,6 +29,8 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     lateinit var network: MySalut
 
     lateinit var login: String
+
+    private val fileName: String = "playerImage"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +106,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
             },
             SalutCallback {
                 if(iteration < 5) {
+                    textView.text = "iteration " + iteration
                     connectToHost(device, iteration + 1)
                 } else {
                     textView.text = "Cannot connect to host..."
@@ -118,7 +123,10 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
            val intent = Intent(this, PlayerGameActivity::class.java)
            intent.putExtra("cardName", card!!.cardName)
            intent.putExtra("cardDesc", card!!.description)
-           intent.putExtra("cardImage", card!!.picture)
+
+           val file = File(filesDir, fileName)
+           file.writeText(card!!.picture)
+
            startActivity(intent)
        }
        catch (ex: IOException)

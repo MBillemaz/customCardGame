@@ -44,7 +44,10 @@ class CardDetails : AppCompatActivity() {
             edtDescription.setText(card.description)
 
             //permission already granted
-            imageButton.setImageURI(Uri.parse(card.picture))
+            if(card.picture != null) {
+
+                imageButton.setImageURI(Uri.parse(card.picture))
+            }
         }
 
 
@@ -152,7 +155,7 @@ class CardDetails : AppCompatActivity() {
     //handle result of picked image
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE && data != null) {
 
             imageButton.setImageURI(data?.data)
             card.picture = data?.data.toString()
