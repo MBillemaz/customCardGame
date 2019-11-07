@@ -1,6 +1,8 @@
 package com.example.customcardgame.ui.cards
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,6 +47,34 @@ class CardsFragment : Fragment() {
             openCardDetails(context!!, ((view as TextView).text) as String)
         }
 
+        root.listCards.setOnItemLongClickListener { parent, view, position, id ->
+            AlertDialog.Builder(context)
+                // set message, title, and icon
+                .setTitle("Suppression")
+                .setMessage("Voulez vous supprimer cette carte ?")
+
+                .setPositiveButton(
+                    "Supprimer"){ dialog, _ ->
+                        //your deleting code
+                        val db = Room.databaseBuilder(context!!.applicationContext, CardDatabase::class.java, "cards")
+                            .allowMainThreadQueries()
+                            .build()
+
+                        db.cardDao().deleteByName(((view as TextView).text) as String)
+                        loadAllCards(context!!, listCards)
+                        dialog.dismiss()
+                    }
+                .setNegativeButton("Annuler")
+                    { dialog, which ->
+                        dialog.dismiss()
+                    }
+                .create().show()
+
+            true
+
+
+        }
+
 
         // La page est chargée on affiche les cartes enregistrées
 //        loadAllCards(context!!, root.listCards)
@@ -58,7 +88,7 @@ class CardsFragment : Fragment() {
         super.onResume()
 
 
-        // On raffraichit la liste des cartes
+        // On rafraichit la liste des cartes
         loadAllCards(context!!, listCards)
     }
 }

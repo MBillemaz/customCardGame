@@ -20,5 +20,8 @@ interface CardDao {
 
     @Delete
     fun delete(card: Card)
+
+    @Query("DELETE FROM cards WHERE cardName = :name")
+    fun deleteByName(name: String)
 }
 
