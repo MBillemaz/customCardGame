@@ -10,8 +10,21 @@ import com.peak.salut.SalutDataReceiver
 import com.example.customcardgame.wifi.MySalut
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.room.Room
+import com.example.customcardgame.Database.CardDatabase
+import com.example.customcardgame.Entities.SalutCard
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Base64
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+
 
 // https://github.com/incognitorobito/Salut#usage
 
@@ -78,9 +91,39 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
                 this.javaClass.simpleName,
                 device.readableName + " has connected!"
             )
-            deviceList.add(device)
+
+            val db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
+                .allowMainThreadQueries()
+                .build()
+
+            var card = db.cardDao().findByName("test")
+
+            val salutCard = SalutCard()
+            salutCard.cardName = card!!.cardName
+            salutCard.description = card!!.description
+
+            /* val imageStream = contentResolver.openInputStream(Uri.parse(card!!.picture))
+            val selectedImage = BitmapFactory.decodeStream(imageStream)
+            Bitmap.createBitmap(selectedImage)
+            salutCard.picture = */
+
+            salutCard.picture = encodeImage(card!!.picture!!)
+            network.sendToDevice(device, salutCard) {
+                Log.e(javaClass.simpleName, "Can't send card to device")
+            }
         }
 
+
+    }
+
+    private fun encodeImage(path: String): String {
+
+        val bm =  MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(path))
+        val baos = ByteArrayOutputStream()
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val b = baos.toByteArray()
+//Base64.de
+        return Base64.encodeToString(b, Base64.DEFAULT)
 
     }
 

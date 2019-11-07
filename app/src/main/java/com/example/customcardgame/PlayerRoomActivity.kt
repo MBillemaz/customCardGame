@@ -1,7 +1,9 @@
 package com.example.customcardgame
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.customcardgame.wifi.MySalut
@@ -12,6 +14,8 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.bluelinelabs.logansquare.LoganSquare
 import com.example.customcardgame.Entities.Card
+import com.example.customcardgame.Entities.SalutCard
+import com.example.customcardgame.ui.play.PlayerGameActivity
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
 import kotlinx.android.synthetic.main.activity_player_room.*
@@ -79,14 +83,14 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                 "A device has connected with the name " + device.instanceName
             )
 
-            textView.text = device.instanceName
+
+            connectToHost(device)
 
             network.stopServiceDiscovery(false)
         }, false)
     }
 
-    fun connectToHost(device: SalutDevice) {
-        var i = 0
+    fun connectToHost(device: SalutDevice, iteration: Int = 0) {
         network.registerWithHost(
             device,
             SalutCallback {
@@ -94,10 +98,11 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                     this.javaClass.simpleName,
                     "Registered !"
                 )
+                textView.text = device.instanceName
             },
             SalutCallback {
-                if(i < 5) {
-                    connectToHost(device)
+                if(iteration < 5) {
+                    connectToHost(device, iteration + 1)
                 } else {
                     textView.text = "Cannot connect to host..."
                 }
@@ -107,8 +112,14 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
 
     override fun onDataReceived(data: Any) {
+        Log.d(javaClass.simpleName, "Nouvelles données :")
        try {
-            val card: Card = LoganSquare.parse(data.toString(), Card::class.java)
+           val card: SalutCard = LoganSquare.parse(data.toString(), SalutCard::class.java)
+           val intent = Intent(this, PlayerGameActivity::class.java)
+           intent.putExtra("cardName", card!!.cardName)
+           intent.putExtra("cardDesc", card!!.description)
+           intent.putExtra("cardImage", card!!.picture)
+           startActivity(intent)
        }
        catch (ex: IOException)
        {

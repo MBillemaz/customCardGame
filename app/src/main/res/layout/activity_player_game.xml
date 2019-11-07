@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.play.PlayerGameActivity">
+
+    <ImageView
+        android:id="@+id/playerImage"
+        android:layout_width="354dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_launcher_background"
+        app:layout_constraintBottom_toBottomOf="@+id/backImage"
+        app:layout_constraintStart_toStartOf="@+id/backImage"
+        app:layout_constraintTop_toBottomOf="@+id/cardDesc" />
+
+    <ImageView
+        android:id="@+id/backImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/back_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cardName"
+        android:layout_width="355dp"
+        android:layout_height="36dp"
+        android:text="Nom"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/backImage"
+        app:layout_constraintStart_toStartOf="@+id/backImage"
+        app:layout_constraintTop_toTopOf="@+id/backImage" />
+
+    <TextView
+        android:id="@+id/cardDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/backImage"
+        app:layout_constraintStart_toStartOf="@+id/backImage"
+        app:layout_constraintTop_toBottomOf="@+id/cardName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

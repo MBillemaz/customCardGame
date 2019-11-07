@@ -13,6 +13,7 @@ import androidx.room.Room
 import com.example.customcardgame.Database.CardDatabase
 import com.example.customcardgame.Entities.Card
 import com.example.customcardgame.R
+import com.example.customcardgame.ui.play.PlayerGameActivity
 import kotlinx.android.synthetic.main.activity_card_details.*
 
 class CardDetails : AppCompatActivity() {
@@ -64,11 +65,17 @@ class CardDetails : AppCompatActivity() {
             }
         }
 
+
         // Quand on clique sur le bouton pour annuler on ne valide pas les modifs
         btnCancel.setOnClickListener {
 
+            val intent = Intent(this, PlayerGameActivity::class.java)
+            intent.putExtra("cardName", card!!.cardName)
+            intent.putExtra("cardDesc", card!!.description)
+            intent.putExtra("cardImage", card!!.picture)
+            startActivity(intent)
             // On revient à l'écran précédent
-            super.onBackPressed()
+            // super.onBackPressed()
         }
 
         // Quand on clique sur le bouton pour valider on valide les modifs
