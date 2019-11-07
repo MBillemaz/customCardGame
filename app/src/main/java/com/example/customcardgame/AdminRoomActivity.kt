@@ -165,7 +165,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         var listNames = ArrayList<HostCardsdata>(0)
 
         // Pour chaque nom on l'enregistre dans l'adapter
-        allCardsName.forEach {
+        allCardsName.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it })).forEach {
 
             listNames.add(HostCardsdata(it))
         }

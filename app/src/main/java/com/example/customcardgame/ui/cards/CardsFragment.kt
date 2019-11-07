@@ -123,7 +123,7 @@ private fun loadAllCards(context: Context, listCardsName: ListView) {
     var listNames = ArrayList<String>(0)
 
     // Pour chaque nom on l'enregistre dans l'adapter
-    allCardsName.forEach {
+    allCardsName.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it })).forEach {
 
         listNames.add(it)
     }
