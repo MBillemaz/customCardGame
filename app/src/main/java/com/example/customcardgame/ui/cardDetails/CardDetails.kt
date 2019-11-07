@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -41,7 +42,8 @@ class CardDetails : AppCompatActivity() {
 
             edtDescription.setText(card.description)
 
-            // TODO : Mettre l'image à jour selon sa donnée en BDD
+            //permission already granted
+            imageButton.setImageURI(Uri.parse(card.picture))
         }
 
 
@@ -51,10 +53,7 @@ class CardDetails : AppCompatActivity() {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
                     PackageManager.PERMISSION_DENIED
                 ) {
-                    //permission denied
-                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    //show popup to request runtime permission
-                    requestPermissions(permissions, PERMISSION_CODE)
+                    requestStoragePermission(PERMISSION_CODE)
                 } else {
                     //permission already granted
                     pickImageFromGallery()
@@ -95,13 +94,21 @@ class CardDetails : AppCompatActivity() {
         }
     }
 
+    fun requestStoragePermission(code: Int) {
+        //permission denied
+        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        //show popup to request runtime permission
+        requestPermissions(permissions, code)
+    }
+
     private fun pickImageFromGallery() {
 
         //Intent to pick image
-        val intent = Intent(Intent.ACTION_PICK)
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -116,6 +123,17 @@ class CardDetails : AppCompatActivity() {
                 ) {
                     //permission from popup granted
                     pickImageFromGallery()
+                } else {
+                    //permission from popup denied
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+            IMAGE_PICK_CODE -> {
+                if (grantResults.size > 0 && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    //permission from popup granted
+                    imageButton.setImageURI(Uri.parse(card.picture))
                 } else {
                     //permission from popup denied
                     Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
@@ -151,7 +169,7 @@ class CardDetails : AppCompatActivity() {
         // Si le nom a été changé on vérifie qu'une autre carte n'a pas le même nouveau nom
         if (oldName != newName) {
 
-            // Si le nouveau nom n'existe pas encore on l'ajoute
+            // Si le nouveau nom existe déjà on ne l'ajoute pas
             if (db.cardDao().findByName(newName) != null) {
 
                 // Le nouveau nom est déjà pris, on affiche une erreur
