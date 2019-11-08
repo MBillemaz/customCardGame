@@ -4,6 +4,7 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_send"
@@ -18,10 +19,11 @@
             android:icon="@drawable/ic_menu_edit"
             android:title="@string/menu_notes" />
 
-        <!--        <item-->
-        <!--            android:id="@+id/nav_tools"-->
-        <!--            android:icon="@drawable/ic_menu_manage"-->
-        <!--            android:title="@string/menu_tools" />-->
+        <item
+            android:id="@+id/nav_in_game"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/menu_in_game" />
+
     </group>
 
     <!--    <item android:title="Communicate">-->

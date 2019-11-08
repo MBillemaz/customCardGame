@@ -171,7 +171,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     // Quand on quitte l'activity, on close la connexion
     override fun onStop() {
         super.onStop()
-        if(network.isConnectedToAnotherDevice) {
+        if(network.registeredHost != null) {
             network.unregisterClient(false)
         }
     }

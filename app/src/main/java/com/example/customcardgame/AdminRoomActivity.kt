@@ -25,6 +25,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.room.RoomDatabase
+import com.example.customcardgame.Entities.Card
 import java.io.ByteArrayOutputStream
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
@@ -33,21 +34,24 @@ import kotlin.random.Random
 
 // https://github.com/incognitorobito/Salut#usage
 
-class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
+class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
     // Objet gerant la connexion entre les devices
     lateinit var network: MySalut
-
     // Login utilisé pour la communication entre devices
     lateinit var login: String
-
     // Liste des devices connecté
     val deviceList: ArrayList<SalutDevice> = ArrayList()
 
     lateinit var customCardAdapter: CustomHostCardsAdapter
-
     // Récupère la database
     lateinit var db: CardDatabase
+
+    // Toutes les cartes mises dans la partie
+    lateinit var allCardsInGame: ArrayList<Card>
+    // Tous les joueurs avec la cartes qu'ils ont d'affecté
+    lateinit var allPlayerWithRole: ArrayList<String>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +59,13 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
         login = intent.getStringExtra("login")
 
-        db =  Room.databaseBuilder(this, CardDatabase::class.java, "cards")
-        .allowMainThreadQueries()
+        db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
+            .allowMainThreadQueries()
             .build()
 
         // Demande des permissions pour la connexion internet & wifi
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions(
+            this,
             arrayOf(
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.CHANGE_WIFI_STATE,
@@ -86,23 +91,23 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // Résultat de la demande de permissions
-        if(requestCode == 14541){
-            if (grantResults.size == 6
+        if (requestCode == 14541) {
+            if (grantResults.size == 7
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
                 && grantResults[2] == PackageManager.PERMISSION_GRANTED
                 && grantResults[3] == PackageManager.PERMISSION_GRANTED
                 && grantResults[4] == PackageManager.PERMISSION_GRANTED
                 && grantResults[5] == PackageManager.PERMISSION_GRANTED
-                && grantResults[6] == PackageManager.PERMISSION_GRANTED)
-            {
+                && grantResults[6] == PackageManager.PERMISSION_GRANTED
+            ) {
                 onRequestSuccess()
             }
         }
     }
 
     // La demande de permissions a été un succès, on continue
-    fun onRequestSuccess() {
+    private fun onRequestSuccess() {
 
         val dataReceiver = SalutDataReceiver(this, this)
         val serviceData = SalutServiceData("CustomCardGame", 50488, login)
@@ -111,7 +116,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         network = MySalut(dataReceiver, serviceData, SalutCallback {
             Log.d(
                 this.javaClass.simpleName,
-            "Sorry, but this device does not support WiFi Direct."
+                "Sorry, but this device does not support WiFi Direct."
             )
         })
         network.isRunningAsHost = true
@@ -125,14 +130,13 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
             )
 
             deviceList.add(device)
-
         }
     }
 
     // Transforme une image en base64 à partir de son URI
     private fun encodeImage(path: String): String {
 
-        val bm =  MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(path))
+        val bm = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(path))
         val baos = ByteArrayOutputStream()
         bm.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val b = baos.toByteArray()
@@ -152,9 +156,11 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
     override fun onDataReceived(p0: Any?) {
     }
 
+    // Lorsque l'hôte choisis de commencer la partie
     fun onStartClick(view: View) {
 
-        if(deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
+        // Il faut avoir au moins une personne de connecté et autant de cartes que de joueurs
+        if (deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
             val attributionDevice = ArrayList<SalutDevice>()
             attributionDevice.addAll(deviceList)
 
@@ -162,24 +168,29 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
                 var card = hostCard.card
                 val counter = hostCard.getNumberOfCards()
 
-                if(counter > 0) {
+                if (counter > 0) {
 
                     val salutCard = SalutCard()
                     salutCard.cardName = card!!.cardName
                     salutCard.description = card!!.description
 
-                    salutCard.picture = encodeImage(card!!.picture!!)
+                    // On s'assure qu'il y ait une photo
+                    if (card!!.picture != null) {
+                        salutCard.picture = encodeImage(card!!.picture!!)
+                    }
 
-                    for(i in 0..counter){
-                        if(attributionDevice.size > 0) {
+                    for (i in 0..counter) {
+                        if (attributionDevice.size > 0) {
                             val index = Random.nextInt(0, attributionDevice.size)
 
                             network.sendToDevice(attributionDevice[index], salutCard) {
-                                Log.e(javaClass.simpleName, "Can't send card to device " + attributionDevice[index].instanceName)
+                                Log.e(
+                                    javaClass.simpleName,
+                                    "Can't send card to device " + attributionDevice[index].instanceName
+                                )
                             }
                             attributionDevice.removeAt(index)
                         }
-
                     }
                 }
             }
@@ -194,8 +205,6 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
             builderSingle.show()
         }
     }
-
-
 
     // Charge les cartes enregistrées avec bouttons + & - pour ajouter/enlever des cartes
     private fun setCardAdapter(context: Context, listCardsName: ListView) {

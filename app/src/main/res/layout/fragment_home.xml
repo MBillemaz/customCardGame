@@ -7,29 +7,31 @@
 
     <Button
         android:id="@+id/userRoomButton"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="156dp"
-        android:text="User"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="32dp"
+        android:text="Rejoindre un salon"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <Button
         android:id="@+id/adminRoomButton"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="156dp"
-        android:layout_marginEnd="32dp"
-        android:text="Admin"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Créer un salon"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <EditText
         android:id="@+id/login"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="76dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:gravity="center"
         android:hint="Login"
