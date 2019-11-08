@@ -18,7 +18,7 @@
     <string name="notes_key">NOTES_KEY</string>
 
     <string name="title_main">A quoi sert cette application ?</string>
-    <string name="description_main">Cette application vous permet de créer des parties pour assigner des rôles secrets de façon manuelle ou aléatoire à d\'autres personnes, notamment pour les jeux du style loups-garous de Thiercelieux.</string>
+    <string name="description_main">Cette application vous permet de créer des parties pour assigner des rôles secrets de façon manuelle ou aléatoire à d\'autres personnes, notamment pour les jeux du style loups-garous de Thiercelieux.\n\nAttention ! Pour faire fonctionner l\'application, il faut activer la WiFi !</string>
     <string name="title_how_to_use">Comment utiliser l\'application ?</string>
     <string name="sub_title_create_cards">Création de cartes rôles</string>
     <string name="description_create_cards">Pour commencer, il faut créer les rôles que le maitre du jeu souhaite affecter aux autres joueurs. \n\nPour ça, il faut cliquer sur les trois barres verticales en haut à gauche dans le menu principal, puis sur le bouton cartes. Vous pourrez ensuite ajouter une nouvelle carte rôle en cliquant sur le bouton \'+\' et lui donner un titre, une description, et une image si vous le souhaitez.\nPour supprimer un rôle, restez appuyé sur la ligne correspondante.</string>

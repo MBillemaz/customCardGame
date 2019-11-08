@@ -2,7 +2,6 @@ package com.example.customcardgame
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -20,13 +19,11 @@ import com.example.customcardgame.ui.info.InfoActivity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var myContext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        myContext = context
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -54,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    // Crée le menu avec son item "info"
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
@@ -65,15 +63,18 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    // Quand on sélectionne un item dans le menu en haut a droite
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+        // Selon l'item sélectionné
         when (item.itemId) {
+
+            // Si on a cliqué sur le bouton "info"
             R.id.action_info -> showInfo()
         }
 
         return super.onOptionsItemSelected(item)
     }
-
 
     // Montre la page d'informations de l'application
     private fun showInfo() {

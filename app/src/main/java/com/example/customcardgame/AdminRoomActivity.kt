@@ -166,6 +166,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
             }
         } else {
             val builderSingle = AlertDialog.Builder(this)
+
             builderSingle.setTitle("Erreur lors du lancement de la partie")
             builderSingle.setMessage("Le nombre de carte est différent du nombre de joueurs présents")
 
@@ -173,9 +174,6 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
             builderSingle.show()
         }
-
-
-
     }
 
 
