@@ -46,8 +46,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         setContentView(R.layout.activity_player_room)
 
         login = intent.getStringExtra("login")
-
-
+        
         arrayAdapter = ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice)
 
         // On demande les permissions de connexion
@@ -86,10 +85,10 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         val dataReceiver = SalutDataReceiver(this, this)
         val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
+        // Affiche une dialog qui montre les devices trouvés
         val builderSingle = AlertDialog.Builder(this)
         builderSingle.setIcon(android.R.drawable.list_selector_background)
         builderSingle.setTitle("Liste des salles trouvées")
-
 
         builderSingle.setNegativeButton("Annuler") { dialog, which -> onBackPressed() }
 

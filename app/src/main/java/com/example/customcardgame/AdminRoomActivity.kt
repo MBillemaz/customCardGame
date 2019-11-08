@@ -2,6 +2,7 @@ package com.example.customcardgame
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,6 +21,7 @@ import com.peak.salut.SalutDevice
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.method.ScrollingMovementMethod
 import android.util.Base64
 import android.view.View
 import android.widget.ArrayAdapter
@@ -29,7 +31,9 @@ import com.example.customcardgame.Entities.Card
 import java.io.ByteArrayOutputStream
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
+import kotlinx.android.synthetic.main.activity_admin_room.*
 import kotlinx.android.synthetic.main.fragment_cards.*
+import kotlinx.android.synthetic.main.fragment_cards.listCards
 import kotlin.random.Random
 
 // https://github.com/incognitorobito/Salut#usage
@@ -48,7 +52,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     lateinit var db: CardDatabase
 
     // Toutes les cartes mises dans la partie
-    lateinit var allCardsInGame: ArrayList<Card>
+    lateinit var allCardsInGame: ArrayList<SalutCard>
     // Tous les joueurs avec la cartes qu'ils ont d'affecté
     lateinit var allPlayerWithRole: ArrayList<String>
 
@@ -59,8 +63,9 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
         login = intent.getStringExtra("login")
 
+        numberPlayer.text = getString(R.string.numberOfPlayer, "0")
+
         db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
-            .allowMainThreadQueries()
             .build()
 
         // Demande des permissions pour la connexion internet & wifi
@@ -122,7 +127,6 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
         network.isRunningAsHost = true
 
         // Quand un device se connecte, on l'ajoute à la liste des utilisateurs
-        // TODO Affichage de la liste des users
         network.startNetworkService { device ->
             Log.d(
                 this.javaClass.simpleName,
@@ -130,6 +134,12 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
             )
 
             deviceList.add(device)
+
+            numberPlayer.text = getString(R.string.numberOfPlayer, deviceList.size.toString())
+            playerListText.text = getString(
+                R.string.playerNames,
+                deviceList.map<SalutDevice, String> { it.readableName }.joinToString()
+            )
         }
     }
 
@@ -159,17 +169,23 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     // Lorsque l'hôte choisis de commencer la partie
     fun onStartClick(view: View) {
 
-        // Il faut avoir au moins une personne de connecté et autant de cartes que de joueurs
+        // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
+        // est égal au nombre de joueur
         if (deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
+
+            // On crée une liste de device qui sera vidée au fur et à mesure
             val attributionDevice = ArrayList<SalutDevice>()
             attributionDevice.addAll(deviceList)
 
+            // Pour chaque set de carte
             customCardAdapter.dataSource.forEach { hostCard ->
                 var card = hostCard.card
                 val counter = hostCard.getNumberOfCards()
 
+                // Si cette carte est présente dans la partie
                 if (counter > 0) {
 
+                    // On crée un objet carte qui peut être envoyé via Salut
                     val salutCard = SalutCard()
                     salutCard.cardName = card!!.cardName
                     salutCard.description = card!!.description
@@ -179,8 +195,13 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
                         salutCard.picture = encodeImage(card!!.picture!!)
                     }
 
+                    // Cette carte est utilisée, elle devra être visible par les autres joueurs
+                    allCardsInGame.add(salutCard)
+
+                    // On prend un utilisateur au hasard et on lui envoie la carte
                     for (i in 0..counter) {
                         if (attributionDevice.size > 0) {
+
                             val index = Random.nextInt(0, attributionDevice.size)
 
                             network.sendToDevice(attributionDevice[index], salutCard) {
@@ -189,12 +210,23 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
                                     "Can't send card to device " + attributionDevice[index].instanceName
                                 )
                             }
+
+                            allPlayerWithRole.add(attributionDevice[index].readableName + " - " + salutCard.cardName)
+
+                            // On supprime le device pour ne pas lui envoyer d'autre carte
                             attributionDevice.removeAt(index)
                         }
                     }
                 }
             }
+
+            // Toutes les cartes ont été assignées et envoyées, on navigue vers la page pour montrer à l'admin les rôles assignés
+            val intent = Intent(this, HostPlayersRoleDetails::class.java)
+            intent.putExtra("PlayersRoles", allPlayerWithRole)
+            startActivity(intent)
+
         } else {
+            // Affiche un message d'erreur
             val builderSingle = AlertDialog.Builder(this)
 
             builderSingle.setTitle("Erreur lors du lancement de la partie")
@@ -214,10 +246,11 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
         var listNames = ArrayList<HostCardsdata>(0)
 
         // Pour chaque nom on l'enregistre dans l'adapter
-        allCards.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it.cardName })).forEach {
+        allCards.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it.cardName }))
+            .forEach {
 
-            listNames.add(HostCardsdata(it))
-        }
+                listNames.add(HostCardsdata(it))
+            }
 
         // On affiche l'adapter
         customCardAdapter = CustomHostCardsAdapter(listNames, context)
