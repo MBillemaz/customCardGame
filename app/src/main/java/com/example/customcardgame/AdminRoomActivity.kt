@@ -24,10 +24,12 @@ import android.util.Base64
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.room.RoomDatabase
 import java.io.ByteArrayOutputStream
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
 import kotlinx.android.synthetic.main.fragment_cards.*
+import kotlin.random.Random
 
 // https://github.com/incognitorobito/Salut#usage
 
@@ -44,11 +46,18 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     lateinit var customCardAdapter: CustomHostCardsAdapter
 
+    // Récupère la database
+    lateinit var db: CardDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_room)
 
         login = intent.getStringExtra("login")
+
+        db =  Room.databaseBuilder(this, CardDatabase::class.java, "cards")
+        .allowMainThreadQueries()
+            .build()
 
         // Demande des permissions pour la connexion internet & wifi
         ActivityCompat.requestPermissions(this,
@@ -57,7 +66,9 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
                 Manifest.permission.CHANGE_WIFI_STATE,
                 Manifest.permission.CHANGE_NETWORK_STATE,
                 Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.INTERNET
+                Manifest.permission.INTERNET,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
             ),
             14541
         )
@@ -76,12 +87,14 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
         // Résultat de la demande de permissions
         if(requestCode == 14541){
-            if (grantResults.size == 5
+            if (grantResults.size == 6
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
                 && grantResults[2] == PackageManager.PERMISSION_GRANTED
                 && grantResults[3] == PackageManager.PERMISSION_GRANTED
-                && grantResults[4] == PackageManager.PERMISSION_GRANTED)
+                && grantResults[4] == PackageManager.PERMISSION_GRANTED
+                && grantResults[5] == PackageManager.PERMISSION_GRANTED
+                && grantResults[6] == PackageManager.PERMISSION_GRANTED)
             {
                 onRequestSuccess()
             }
@@ -104,7 +117,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         network.isRunningAsHost = true
 
         // Quand un device se connecte, on l'ajoute à la liste des utilisateurs
-        // TODO Affichage de la liste des users & suppression de l'envoi automatique de la carte test
+        // TODO Affichage de la liste des users
         network.startNetworkService { device ->
             Log.d(
                 this.javaClass.simpleName,
@@ -137,31 +150,37 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
     // Quand on reçoie des infos d'autres dispositifs
     // Pour le moment, l'admin ne doit pas recevoir de données des joueurs, cette fonction est donc inutile
     override fun onDataReceived(p0: Any?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun onStartClick(view: View) {
 
-        if(deviceList.size == customCardAdapter.totalCardNumber) {
-            val db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
-                .allowMainThreadQueries()
-                .build()
+        if(deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
+            val attributionDevice = ArrayList<SalutDevice>()
+            attributionDevice.addAll(deviceList)
 
-            deviceList.forEach { device ->
-                var card = db.cardDao().findByName("test")
+            customCardAdapter.dataSource.forEach { hostCard ->
+                var card = hostCard.card
+                val counter = hostCard.getNumberOfCards()
 
-                val salutCard = SalutCard()
-                salutCard.cardName = card!!.cardName
-                salutCard.description = card!!.description
+                if(counter > 0) {
 
-                /* val imageStream = contentResolver.openInputStream(Uri.parse(card!!.picture))
-                val selectedImage = BitmapFactory.decodeStream(imageStream)
-                Bitmap.createBitmap(selectedImage)
-                salutCard.picture = */
-                salutCard.picture = encodeImage(card!!.picture!!)
+                    val salutCard = SalutCard()
+                    salutCard.cardName = card!!.cardName
+                    salutCard.description = card!!.description
 
-                network.sendToDevice(device, salutCard) {
-                    Log.e(javaClass.simpleName, "Can't send card to device")
+                    salutCard.picture = encodeImage(card!!.picture!!)
+
+                    for(i in 0..counter){
+                        if(attributionDevice.size > 0) {
+                            val index = Random.nextInt(0, attributionDevice.size)
+
+                            network.sendToDevice(attributionDevice[index], salutCard) {
+                                Log.e(javaClass.simpleName, "Can't send card to device " + attributionDevice[index].instanceName)
+                            }
+                            attributionDevice.removeAt(index)
+                        }
+
+                    }
                 }
             }
         } else {
@@ -183,17 +202,12 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
     // Charge les cartes enregistrées avec bouttons + & - pour ajouter/enlever des cartes
     private fun setCardAdapter(context: Context, listCardsName: ListView) {
 
-        // Récupère la database
-        val db = Room.databaseBuilder(context, CardDatabase::class.java, "cards")
-            .allowMainThreadQueries()
-            .build()
-
         // Récupère tous les noms des cartes
-        var allCardsName = db.cardDao().getAllNames()
+        var allCards = db.cardDao().findAll()
         var listNames = ArrayList<HostCardsdata>(0)
 
         // Pour chaque nom on l'enregistre dans l'adapter
-        allCardsName.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it })).forEach {
+        allCards.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it.cardName })).forEach {
 
             listNames.add(HostCardsdata(it))
         }

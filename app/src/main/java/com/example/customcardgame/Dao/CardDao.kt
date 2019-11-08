@@ -12,6 +12,9 @@ interface CardDao {
     @Query("SELECT cardName FROM cards")
     fun getAllNames(): Array<String>
 
+    @Query("SELECT * FROM cards")
+    fun findAll(): Array<Card>
+
     @Query("SELECT * FROM cards WHERE cardName LIKE :name LIMIT 1")
     fun findByName(name: String): Card?
 

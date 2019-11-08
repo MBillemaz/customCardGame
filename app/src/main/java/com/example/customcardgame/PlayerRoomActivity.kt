@@ -133,7 +133,6 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                     "Registered !"
                 )
                 textView.text = "Connecté à " + device.instanceName + " \n En attente du début de la partie"
-                //network.stopServiceDiscovery(false)
             },
             SalutCallback {
                 if(iteration < 5) {

@@ -1,9 +1,10 @@
 package com.example.customcardgame.hostData
 
-class HostCardsdata(val name: String) {
+import com.example.customcardgame.Entities.Card
+
+class HostCardsdata(val card: Card) {
 
     private var numberOfCards: Int = 0
-    private var cardName: String = name
 
     fun getNumberOfCards(): Int {
         return numberOfCards
@@ -23,10 +24,6 @@ class HostCardsdata(val name: String) {
     }
 
     fun getCardName(): String {
-        return cardName
-    }
-
-    fun setCardName(name: String) {
-        this.cardName = name
+        return card.cardName
     }
 }
