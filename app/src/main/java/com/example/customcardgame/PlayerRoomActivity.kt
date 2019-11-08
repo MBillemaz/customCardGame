@@ -26,10 +26,14 @@ import java.io.IOException
 
 class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
+    // Objet utilisé pour la connexion entre device
     lateinit var network: MySalut
 
+    // Login utilisé pour la communication
     lateinit var login: String
 
+    // Chemin de stockage de l'image reçue par le MJ
+    // Nécessaire pour la passer jusqu'a la PlayerGameActivity, car la base64 est trop lourde pour passer dans un intent
     private val fileName: String = "playerImage"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +42,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
         login = intent.getStringExtra("login")
 
+        // On demande les permissions de connexion
         ActivityCompat.requestPermissions(this,
             arrayOf(
                 Manifest.permission.ACCESS_WIFI_STATE,
@@ -73,6 +78,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         val dataReceiver = SalutDataReceiver(this, this)
         val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
+        // On initialise la connexion en tant que simple device
         network = MySalut(dataReceiver, serviceData, SalutCallback {
             Log.d(
                 this.javaClass.simpleName,
@@ -81,6 +87,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         })
         network.isRunningAsHost = false
 
+        // Dés qu'on trouve un device, on essaye de s'y connecter
         network.discoverNetworkServices({ device ->
             Log.d(
                 this.javaClass.simpleName,
@@ -94,6 +101,8 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         }, false)
     }
 
+    // Fonction récursive
+    // On tente de se connecter cinq fois au device trouvé. Si cela échoue, envoie un message d'erreur à l'utilisateur
     fun connectToHost(device: SalutDevice, iteration: Int = 0) {
         network.registerWithHost(
             device,
@@ -116,6 +125,9 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     }
 
 
+    // Lors du début de la partie, le MJ va envoyer une carte à l'utilisateur
+    // On parse les données reçues, on les transforme en objet SalutCard
+    // On stocke l'image dans un fichier local et on lance la PlayerGameActivity
     override fun onDataReceived(data: Any) {
         Log.d(javaClass.simpleName, "Nouvelles données :")
        try {
@@ -135,6 +147,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
        }
     }
 
+    // Quand on quitte l'activity, on close la connexion
     override fun onStop() {
         super.onStop()
         network.unregisterClient(false)

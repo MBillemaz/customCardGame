@@ -35,10 +35,13 @@ import kotlinx.android.synthetic.main.fragment_cards.*
 
 class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
+    // Objet gerant la connexion entre les devices
     lateinit var network: MySalut
 
+    // Login utilisé pour la communication entre devices
     lateinit var login: String
 
+    // Liste des devices connecté
     val deviceList: ArrayList<SalutDevice> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,11 +103,15 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         })
         network.isRunningAsHost = true
 
+        // Quand un device se connecte, on l'ajoute à la liste des utilisateurs
+        // TODO Affichage de la liste des users & suppression de l'envoi automatique de la carte test
         network.startNetworkService { device ->
             Log.d(
                 this.javaClass.simpleName,
                 device.readableName + " has connected!"
             )
+
+            deviceList.add(device)
 
             val db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
                 .allowMainThreadQueries()
@@ -121,6 +128,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
             Bitmap.createBitmap(selectedImage)
             salutCard.picture = */
 
+
             salutCard.picture = encodeImage(card!!.picture!!)
             network.sendToDevice(device, salutCard) {
                 Log.e(javaClass.simpleName, "Can't send card to device")
@@ -128,6 +136,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         }
     }
 
+    // Transforme une image en base64 à partir de son URI
     private fun encodeImage(path: String): String {
 
         val bm =  MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.parse(path))
@@ -146,6 +155,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
     }
 
     // Quand on reçoie des infos d'autres dispositifs
+    // Pour le moment, l'admin ne doit pas recevoir de données des joueurs, cette fonction est donc inutile
     override fun onDataReceived(p0: Any?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
