@@ -20,6 +20,7 @@ import com.peak.salut.SalutDevice
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.method.ScrollingMovementMethod
 import android.util.Base64
 import android.view.View
 import android.widget.ArrayAdapter
@@ -28,7 +29,9 @@ import androidx.room.RoomDatabase
 import java.io.ByteArrayOutputStream
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
+import kotlinx.android.synthetic.main.activity_admin_room.*
 import kotlinx.android.synthetic.main.fragment_cards.*
+import kotlinx.android.synthetic.main.fragment_cards.listCards
 import kotlin.random.Random
 
 // https://github.com/incognitorobito/Salut#usage
@@ -54,6 +57,8 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         setContentView(R.layout.activity_admin_room)
 
         login = intent.getStringExtra("login")
+
+        numberPlayer.text = getString(R.string.numberOfPlayer, "0")
 
         db =  Room.databaseBuilder(this, CardDatabase::class.java, "cards")
         .allowMainThreadQueries()
@@ -87,7 +92,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
         // Résultat de la demande de permissions
         if(requestCode == 14541){
-            if (grantResults.size == 6
+            if (grantResults.size == 7
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
                 && grantResults[2] == PackageManager.PERMISSION_GRANTED
@@ -117,7 +122,6 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         network.isRunningAsHost = true
 
         // Quand un device se connecte, on l'ajoute à la liste des utilisateurs
-        // TODO Affichage de la liste des users
         network.startNetworkService { device ->
             Log.d(
                 this.javaClass.simpleName,
@@ -126,6 +130,11 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
             deviceList.add(device)
 
+            numberPlayer.text = getString(R.string.numberOfPlayer, deviceList.size.toString())
+            playerListText.text = getString(
+                R.string.playerNames,
+                deviceList.map<SalutDevice, String> { it.readableName }.joinToString()
+            )
         }
     }
 
@@ -154,22 +163,30 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     fun onStartClick(view: View) {
 
+        // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
+        // est égal au nombre de joueur
         if(deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
+
+            // On crée une liste de device qui sera vidée au fur et à mesure
             val attributionDevice = ArrayList<SalutDevice>()
             attributionDevice.addAll(deviceList)
 
+            // Pour chaque set de carte
             customCardAdapter.dataSource.forEach { hostCard ->
                 var card = hostCard.card
                 val counter = hostCard.getNumberOfCards()
 
+                // Si cette carte est présente dans la partie
                 if(counter > 0) {
 
+                    // On crée un objet carte qui peut être envoyé via Salut
                     val salutCard = SalutCard()
                     salutCard.cardName = card!!.cardName
                     salutCard.description = card!!.description
 
                     salutCard.picture = encodeImage(card!!.picture!!)
 
+                    // On prend un utilisateur au hasard et on lui envoie la carte
                     for(i in 0..counter){
                         if(attributionDevice.size > 0) {
                             val index = Random.nextInt(0, attributionDevice.size)
@@ -177,6 +194,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
                             network.sendToDevice(attributionDevice[index], salutCard) {
                                 Log.e(javaClass.simpleName, "Can't send card to device " + attributionDevice[index].instanceName)
                             }
+                            // On supprime le device pour ne pas lui envoyer d'autre carte
                             attributionDevice.removeAt(index)
                         }
 
@@ -184,6 +202,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
                 }
             }
         } else {
+            // Affiche un message d'erreur
             val builderSingle = AlertDialog.Builder(this)
 
             builderSingle.setTitle("Erreur lors du lancement de la partie")

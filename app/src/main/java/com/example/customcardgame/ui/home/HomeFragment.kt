@@ -85,12 +85,15 @@ class HomeFragment : Fragment() {
         if (loginText.isNullOrBlank()) {
 
             // On affiche une erreur
-            Toast.makeText(context, "Il faut un nom d'utilisateur.", Toast.LENGTH_SHORT)
-                .show()
+            login.setError("Il faut un nom d'utilisateur.")
 
             return false
 
-        } else {
+        } else if(loginText.length > 15) {
+            login.setError("Le login est limité à 15 caractères")
+            return false
+        }
+        else {
 
             // On enregistre l'identifiant
             val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return false

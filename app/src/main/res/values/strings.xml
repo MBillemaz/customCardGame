@@ -25,4 +25,7 @@
     <string name="sub_title_create_room">Création d\'un salon</string>
     <string name="description_create_room">Après avoir créé les cartes, le maitre du jeu doit créer un salon dans le menu principal. Il peut alors choisir le nombre de cartes qu\'il souhaite mettre en jeu par catégorie (exemple : 3 villageois&#8230;)\n\nPendant ce temps, les autres joueurs peuvent rejoindre le salon créé par le maitre du jeu. Le nom du salon sera le nom que le maitre du jeu a noté au moment de le créer.\n\nUne fois que tous les joueurs ont rejoins, et que le maitre du jeu a créer suffisament de cartes pour les joueurs, il peut démarrer la partie. Les cartes seront affectées de manière aléatoire aux joueurs présents, qui pourront voir leurs rôles en restant appuyé sur la carte.\n</string>
 
+    <string name="numberOfPlayer">Nombre de joueurs : %1$s</string>
+    <string name="playerNames">Joueurs présents : %1$s</string>
+    <string name="noPlayers">Aucun joueur présent</string>
 </resources>
