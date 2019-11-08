@@ -23,21 +23,16 @@
         android:label="@string/menu_notes"
         tools:layout="@layout/fragment_notes" />
 
-    <fragment
-        android:id="@+id/nav_tools"
-        android:name="com.example.customcardgame.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
 
-    <fragment
-        android:id="@+id/nav_share"
-        android:name="com.example.customcardgame.ui.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_share"-->
+<!--        android:name="com.example.customcardgame.ui.share.ShareFragment"-->
+<!--        android:label="@string/menu_share"-->
+<!--        tools:layout="@layout/fragment_share" />-->
 
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="com.example.customcardgame.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_send"-->
+<!--        android:name="com.example.customcardgame.ui.info.InfoFragment"-->
+<!--        android:label="@string/menu_send"-->
+<!--        tools:layout="@layout/fragment_info" />-->
 </navigation>
