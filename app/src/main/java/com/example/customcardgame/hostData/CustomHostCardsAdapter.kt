@@ -50,7 +50,7 @@ class CustomHostCardsAdapter(val dataSource: ArrayList<HostCardsdata>, val conte
         val minusButton = rowView.findViewById(R.id.minus) as Button
         // Le bouton +
         val plusButton = rowView.findViewById(R.id.plus) as Button
-        
+
 
         // Lors du clique sur le bouton '-'
         minusButton.setOnClickListener {
