@@ -13,7 +13,6 @@ import com.peak.salut.SalutServiceData
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.bluelinelabs.logansquare.LoganSquare
-import com.example.customcardgame.Entities.Card
 import com.example.customcardgame.Entities.SalutCard
 import com.example.customcardgame.ui.play.PlayerGameActivity
 import com.peak.salut.Callbacks.SalutCallback
@@ -22,6 +21,8 @@ import kotlinx.android.synthetic.main.activity_player_room.*
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 
 
 class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
@@ -36,11 +37,18 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     // Nécessaire pour la passer jusqu'a la PlayerGameActivity, car la base64 est trop lourde pour passer dans un intent
     private val fileName: String = "playerImage"
 
+    private val deviceList = ArrayList<SalutDevice>()
+
+    private lateinit var arrayAdapter: ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_room)
 
         login = intent.getStringExtra("login")
+
+
+        arrayAdapter = ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice)
 
         // On demande les permissions de connexion
         ActivityCompat.requestPermissions(this,
@@ -78,6 +86,18 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
         val dataReceiver = SalutDataReceiver(this, this)
         val serviceData = SalutServiceData("CustomCardGame", 50488, login)
 
+        val builderSingle = AlertDialog.Builder(this)
+        builderSingle.setIcon(android.R.drawable.list_selector_background)
+        builderSingle.setTitle("Liste des salles trouvées")
+
+
+        builderSingle.setNegativeButton("Annuler") { dialog, which -> onBackPressed() }
+
+        builderSingle.setAdapter(arrayAdapter) { _, which ->
+                val strName = arrayAdapter.getItem(which)
+                connectToHost(deviceList[which])
+            }
+        builderSingle.show()
         // On initialise la connexion en tant que simple device
         network = MySalut(dataReceiver, serviceData, SalutCallback {
             Log.d(
@@ -94,10 +114,11 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                 "A device has connected with the name " + device.instanceName
             )
 
+            deviceList.add(device)
+            arrayAdapter.add(device.instanceName)
+            // connectToHost(device)
 
-            connectToHost(device)
-
-            network.stopServiceDiscovery(false)
+            //network.stopServiceDiscovery(false)
         }, false)
     }
 
@@ -111,7 +132,8 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                     this.javaClass.simpleName,
                     "Registered !"
                 )
-                textView.text = device.instanceName
+                textView.text = "Connecté à " + device.instanceName + " \n En attente du début de la partie"
+                //network.stopServiceDiscovery(false)
             },
             SalutCallback {
                 if(iteration < 5) {
@@ -150,6 +172,8 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     // Quand on quitte l'activity, on close la connexion
     override fun onStop() {
         super.onStop()
-        network.unregisterClient(false)
+        if(network.isConnectedToAnotherDevice) {
+            network.unregisterClient(false)
+        }
     }
 }

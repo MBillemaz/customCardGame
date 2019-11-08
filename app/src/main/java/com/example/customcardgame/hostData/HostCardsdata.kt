@@ -9,8 +9,17 @@ class HostCardsdata(val name: String) {
         return numberOfCards
     }
 
-    fun setNumberOfCards(number: Int) {
-        this.numberOfCards = number
+    fun increaseNumberOfCards(): Boolean {
+        numberOfCards++
+        return true
+    }
+
+    fun decreaseNumberOfCards(): Boolean {
+        if(numberOfCards > 0) {
+            numberOfCards--
+            return true
+        }
+        return false
     }
 
     fun getCardName(): String {

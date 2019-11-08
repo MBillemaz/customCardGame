@@ -10,7 +10,6 @@ import com.peak.salut.SalutServiceData
 import com.peak.salut.SalutDataReceiver
 import com.example.customcardgame.wifi.MySalut
 import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.core.app.ActivityCompat
 import androidx.room.Room
@@ -18,15 +17,14 @@ import com.example.customcardgame.Database.CardDatabase
 import com.example.customcardgame.Entities.SalutCard
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
-import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Base64
+import android.view.View
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
 import kotlinx.android.synthetic.main.fragment_cards.*
@@ -43,6 +41,8 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
     // Liste des devices connecté
     val deviceList: ArrayList<SalutDevice> = ArrayList()
+
+    lateinit var customCardAdapter: CustomHostCardsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +63,7 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         )
 
         // Chargement des cartes
-        loadAllCards(this, listCards)
+        setCardAdapter(this, listCards)
     }
 
     // Résultat de la demande de permissions
@@ -113,26 +113,6 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
 
             deviceList.add(device)
 
-            val db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
-                .allowMainThreadQueries()
-                .build()
-
-            var card = db.cardDao().findByName("test")
-
-            val salutCard = SalutCard()
-            salutCard.cardName = card!!.cardName
-            salutCard.description = card!!.description
-
-            /* val imageStream = contentResolver.openInputStream(Uri.parse(card!!.picture))
-            val selectedImage = BitmapFactory.decodeStream(imageStream)
-            Bitmap.createBitmap(selectedImage)
-            salutCard.picture = */
-
-
-            salutCard.picture = encodeImage(card!!.picture!!)
-            network.sendToDevice(device, salutCard) {
-                Log.e(javaClass.simpleName, "Can't send card to device")
-            }
         }
     }
 
@@ -160,10 +140,48 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    fun onStartClick(view: View) {
+
+        if(deviceList.size == customCardAdapter.totalCardNumber) {
+            val db = Room.databaseBuilder(this, CardDatabase::class.java, "cards")
+                .allowMainThreadQueries()
+                .build()
+
+            deviceList.forEach { device ->
+                var card = db.cardDao().findByName("test")
+
+                val salutCard = SalutCard()
+                salutCard.cardName = card!!.cardName
+                salutCard.description = card!!.description
+
+                /* val imageStream = contentResolver.openInputStream(Uri.parse(card!!.picture))
+                val selectedImage = BitmapFactory.decodeStream(imageStream)
+                Bitmap.createBitmap(selectedImage)
+                salutCard.picture = */
+                salutCard.picture = encodeImage(card!!.picture!!)
+
+                network.sendToDevice(device, salutCard) {
+                    Log.e(javaClass.simpleName, "Can't send card to device")
+                }
+            }
+        } else {
+            val builderSingle = AlertDialog.Builder(this)
+            builderSingle.setTitle("Erreur lors du lancement de la partie")
+            builderSingle.setMessage("Le nombre de carte est différent du nombre de joueurs présents")
+
+            builderSingle.setNegativeButton("Annuler") { dialog, which -> dialog.dismiss() }
+
+            builderSingle.show()
+        }
+
+
+
+    }
+
 
 
     // Charge les cartes enregistrées avec bouttons + & - pour ajouter/enlever des cartes
-    private fun loadAllCards(context: Context, listCardsName: ListView) {
+    private fun setCardAdapter(context: Context, listCardsName: ListView) {
 
         // Récupère la database
         val db = Room.databaseBuilder(context, CardDatabase::class.java, "cards")
@@ -181,7 +199,8 @@ class AdminRoomActivity: AppCompatActivity(), SalutDataCallback{
         }
 
         // On affiche l'adapter
-        var adapter = CustomHostCardsAdapter(listNames, context)
-        listCardsName.adapter = adapter
+        customCardAdapter = CustomHostCardsAdapter(listNames, context)
+
+        listCardsName.adapter = customCardAdapter
     }
 }

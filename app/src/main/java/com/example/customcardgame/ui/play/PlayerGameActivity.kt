@@ -5,12 +5,15 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_player_game.*
 import android.view.animation.DecelerateInterpolator
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.net.Uri
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.marginTop
 import com.example.customcardgame.R
 import android.graphics.BitmapFactory
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Base64
 import org.json.JSONObject
 import java.io.File
@@ -64,6 +67,8 @@ class PlayerGameActivity : AppCompatActivity() {
             true
         }
 
+        sendVibration()
+
         // Uniquement quand l'utilisateur relache un clic long, on lance une animation
         // Pour remettre l'image à sa place
         backImage.setOnTouchListener { view: View, motionEvent: MotionEvent ->
@@ -80,6 +85,16 @@ class PlayerGameActivity : AppCompatActivity() {
         }
 
 
+
+    }
+
+    fun sendVibration() {
+        val vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            vibrator.vibrate(VibrationEffect.createOneShot(1000, 1))
+        } else{
+            vibrator.vibrate(1000)
+        }
 
     }
 
