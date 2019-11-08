@@ -37,10 +37,11 @@ class CardDetails : AppCompatActivity() {
         edtCardName.setText(oldName)
 
         // On cherche la description et l'image dans la BDD
-        var card = getCardFromBDD(oldName)
+        var bddCard = getCardFromBDD(oldName)
 
-        if (card != null) {
+        if (bddCard != null) {
 
+            card = bddCard
             edtDescription.setText(card.description)
 
             //permission already granted

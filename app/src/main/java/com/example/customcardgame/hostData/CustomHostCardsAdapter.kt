@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
+import com.example.customcardgame.Entities.Card
 import com.example.customcardgame.R
 
 
@@ -15,6 +16,10 @@ class CustomHostCardsAdapter(val dataSource: ArrayList<HostCardsdata>, val conte
 
     private val inflater: LayoutInflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    var totalCardNumber = 0
+
+    lateinit var card: Card
 
     // Récupère la taille de notre liste
     override fun getCount(): Int {
@@ -45,27 +50,24 @@ class CustomHostCardsAdapter(val dataSource: ArrayList<HostCardsdata>, val conte
         val minusButton = rowView.findViewById(R.id.minus) as Button
         // Le bouton +
         val plusButton = rowView.findViewById(R.id.plus) as Button
-
-
-        var cardsNumber = 0
-
+        
 
         // Lors du clique sur le bouton '-'
         minusButton.setOnClickListener {
 
-            // Il faut vérifier de ne pas mettre moins de 0 cartes
-            if (cardsNumber > 0) {
+            val decreased = dataSource.get(position).decreaseNumberOfCards()
+            numberOfCards.text = dataSource.get(position).getNumberOfCards().toString()
 
-                cardsNumber--
-                numberOfCards.text = cardsNumber.toString()
-            }
+            if (decreased) { totalCardNumber-- }
+
         }
 
         // Lors du clique sur le bouton '+'
         plusButton.setOnClickListener {
 
-            cardsNumber++
-            numberOfCards.text = cardsNumber.toString()
+            val increase = dataSource.get(position).increaseNumberOfCards()
+            if (increase) { totalCardNumber++ }
+            numberOfCards.text = dataSource.get(position).getNumberOfCards().toString()
         }
 
         val cardData = getItem(position) as HostCardsdata
@@ -74,4 +76,6 @@ class CustomHostCardsAdapter(val dataSource: ArrayList<HostCardsdata>, val conte
 
         return rowView
     }
+
+
 }

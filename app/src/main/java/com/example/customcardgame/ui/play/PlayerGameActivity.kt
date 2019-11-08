@@ -5,12 +5,15 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_player_game.*
 import android.view.animation.DecelerateInterpolator
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.net.Uri
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.marginTop
 import com.example.customcardgame.R
 import android.graphics.BitmapFactory
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Base64
 import org.json.JSONObject
 import java.io.File
@@ -18,18 +21,26 @@ import java.io.File
 
 class PlayerGameActivity : AppCompatActivity() {
 
+    // Variable indiquant si l'utilisateur est entrain de toucher l'écran
     private var isLongPressed = false
+
+    // Contient la position de base de l'image
+    // Utilisé pour la remettre à sa place
     private var backImageInitialTop: Int = 0
+
+    // Chemin du fichier contenant l'image à afficher
     private val fileName = "playerImage"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.customcardgame.R.layout.activity_player_game)
 
+        // On récupere les informations de la carte dans l'intent et le fichier
         cardName.text = intent.getStringExtra("cardName")!!
         cardDesc.text = intent.getStringExtra("cardDesc")!!
 
 
+        // Si on à une image stockée, on la récupère et on l'affiche.
         val file = File(filesDir, fileName)
         if(file.exists()){
             val base64Image = file.readText()
@@ -39,10 +50,11 @@ class PlayerGameActivity : AppCompatActivity() {
             playerImage.setImageBitmap(decodedByte)
         }
 
-
-
+        // On récupere la position initiale de l'image
         backImageInitialTop = backImage.marginTop
 
+        // Quand l'utilisateur fait un clic long sur l'image, on lance une animation pour la faire descendre et afficher
+        // Ce qu'il y a derrière
         backImage.setOnLongClickListener{
 
             isLongPressed = true
@@ -55,6 +67,10 @@ class PlayerGameActivity : AppCompatActivity() {
             true
         }
 
+        sendVibration()
+
+        // Uniquement quand l'utilisateur relache un clic long, on lance une animation
+        // Pour remettre l'image à sa place
         backImage.setOnTouchListener { view: View, motionEvent: MotionEvent ->
             if(motionEvent.action == MotionEvent.ACTION_UP && isLongPressed) {
                 isLongPressed = false
@@ -72,30 +88,14 @@ class PlayerGameActivity : AppCompatActivity() {
 
     }
 
-    fun flipImage(setBackImage: Boolean) {
+    fun sendVibration() {
+        val vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            vibrator.vibrate(VibrationEffect.createOneShot(1000, 1))
+        } else{
+            vibrator.vibrate(1000)
+        }
 
     }
-
-   /* fun flipImage(setBackImage: Boolean) {
-        val oa1 = ObjectAnimator.ofInt(playerImage, "layout_marginTop", initialTop, )
-        val oa2 = ObjectAnimator.ofFloat(playerImage, "scaleX", 0f, 1f)
-        oa1.interpolator = DecelerateInterpolator()
-        oa2.interpolator = AccelerateDecelerateInterpolator()
-        oa1.setDuration(300);
-        oa2.setDuration(300);
-        oa1.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                if(setBackImage) {
-                    playerImage.setImageResource(R.drawable.back_card)
-                } else {
-                    playerImage.setImageURI(image)
-                }
-                oa2.start()
-            }
-        })
-        oa1.start()
-    }
-    */
 
 }
