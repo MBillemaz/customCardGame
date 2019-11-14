@@ -3,23 +3,19 @@ package com.example.customcardgame.ui.rooms
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.peak.salut.Callbacks.SalutDataCallback
 import android.util.Log
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.bluelinelabs.logansquare.LoganSquare
-import com.example.customcardgame.Entities.SalutCard
+import com.example.customcardgame.R
 import com.example.customcardgame.ui.play.PlayerGameActivity
+import com.example.customcardgame.wifi.SingletonNetwork
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
 import kotlinx.android.synthetic.main.activity_player_room.*
 import java.io.File
-import java.io.IOException
-import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
-import com.example.customcardgame.R
-import com.example.customcardgame.wifi.SingletonNetwork
 
 
 class PlayerRoomActivity : AppCompatActivity() {
@@ -93,7 +89,7 @@ class PlayerRoomActivity : AppCompatActivity() {
         builderSingle.show()
 
         SingletonNetwork.createNetwork(this, login, false)
-
+    
         // Dés qu'on trouve un device, on essaye de s'y connecter
         SingletonNetwork.findRoom(true) { device ->
             Log.d(

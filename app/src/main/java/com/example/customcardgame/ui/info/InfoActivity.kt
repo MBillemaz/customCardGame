@@ -1,7 +1,7 @@
 package com.example.customcardgame.ui.info
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.customcardgame.R
 
 class InfoActivity : AppCompatActivity() {

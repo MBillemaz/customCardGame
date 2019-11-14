@@ -1,21 +1,18 @@
 package com.example.customcardgame.ui.play
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_player_game.*
-import android.view.animation.DecelerateInterpolator
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.net.Uri
-import android.view.MotionEvent
-import android.view.View
-import androidx.core.view.marginTop
-import com.example.customcardgame.R
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Base64
-import org.json.JSONObject
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginTop
+import kotlinx.android.synthetic.main.activity_player_game.*
 import java.io.File
 
 

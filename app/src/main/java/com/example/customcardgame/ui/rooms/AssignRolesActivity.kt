@@ -1,18 +1,16 @@
 package com.example.customcardgame.ui.rooms
 
-import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.example.customcardgame.Entities.SalutCard
 import com.example.customcardgame.HostPlayersRoleDetails
 import com.example.customcardgame.R
 import com.example.customcardgame.wifi.SingletonNetwork
-import com.peak.salut.SalutDevice
 import kotlinx.android.synthetic.main.activity_assign_roles.*
 import kotlin.random.Random
 

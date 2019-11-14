@@ -1,9 +1,9 @@
 package com.example.customcardgame
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_host_players_role_details.*
 
 class HostPlayersRoleDetails : AppCompatActivity() {

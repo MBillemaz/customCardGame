@@ -2,19 +2,14 @@ package com.example.customcardgame.wifi
 
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.net.wifi.WifiManager
-import android.nfc.Tag
 import android.util.Log
 import com.bluelinelabs.logansquare.LoganSquare
 import com.example.customcardgame.Entities.SalutCard
-import com.example.customcardgame.MainActivity
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.Callbacks.SalutDataCallback
-import com.peak.salut.Callbacks.SalutDeviceCallback
 import com.peak.salut.SalutDataReceiver
 import com.peak.salut.SalutDevice
 import com.peak.salut.SalutServiceData
-import java.lang.Exception
 
 // Singleton gérant la connexion entre devices
 object SingletonNetwork: SalutDataCallback {
