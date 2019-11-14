@@ -89,7 +89,7 @@ class PlayerRoomActivity : AppCompatActivity() {
         builderSingle.show()
 
         SingletonNetwork.createNetwork(this, login, false)
-    
+
         // Dés qu'on trouve un device, on essaye de s'y connecter
         SingletonNetwork.findRoom(true) { device ->
             Log.d(
