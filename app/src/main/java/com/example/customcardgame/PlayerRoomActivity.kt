@@ -23,12 +23,10 @@ import java.io.File
 import java.io.IOException
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import com.example.customcardgame.wifi.SingletonNetwork
 
 
 class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
-
-    // Objet utilisé pour la connexion entre device
-    lateinit var network: MySalut
 
     // Login utilisé pour la communication
     lateinit var login: String
@@ -97,17 +95,11 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                 connectToHost(deviceList[which])
             }
         builderSingle.show()
-        // On initialise la connexion en tant que simple device
-        network = MySalut(dataReceiver, serviceData, SalutCallback {
-            Log.d(
-                this.javaClass.simpleName,
-                "Sorry, but this device does not support WiFi Direct."
-            )
-        })
-        network.isRunningAsHost = false
+
+        SingletonNetwork.createNetwork(this, login, false)
 
         // Dés qu'on trouve un device, on essaye de s'y connecter
-        network.discoverNetworkServices({ device ->
+        SingletonNetwork.findRoom(true) { device ->
             Log.d(
                 this.javaClass.simpleName,
                 "A device has connected with the name " + device.instanceName
@@ -115,27 +107,25 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
 
             deviceList.add(device)
             arrayAdapter.add(device.instanceName)
-            // connectToHost(device)
 
-            //network.stopServiceDiscovery(false)
-        }, false)
+        }
     }
 
     // Fonction récursive
     // On tente de se connecter cinq fois au device trouvé. Si cela échoue, envoie un message d'erreur à l'utilisateur
     fun connectToHost(device: SalutDevice, iteration: Int = 0) {
-        network.registerWithHost(
+        SingletonNetwork.joinRoom(
             device,
             SalutCallback {
                 Log.d(
                     this.javaClass.simpleName,
                     "Registered !"
                 )
-                textView.text = "Connecté à " + device.instanceName + " \n En attente du début de la partie"
+                textView.text = "Connecté à ${device.instanceName} \n En attente du début de la partie"
             },
             SalutCallback {
                 if(iteration < 5) {
-                    textView.text = "iteration " + iteration
+                    textView.text = "iteration ${iteration}"
                     connectToHost(device, iteration + 1)
                 } else {
                     textView.text = "Cannot connect to host..."
@@ -167,11 +157,4 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
        }
     }
 
-    // Quand on quitte l'activity, on close la connexion
-    override fun onStop() {
-        super.onStop()
-        if(network.registeredHost != null) {
-            network.unregisterClient(false)
-        }
-    }
 }

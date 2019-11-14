@@ -20,17 +20,20 @@ import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
 import android.graphics.Bitmap
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
 import android.util.Base64
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.room.RoomDatabase
 import com.example.customcardgame.Entities.Card
 import java.io.ByteArrayOutputStream
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
+import com.example.customcardgame.wifi.SingletonNetwork
 import kotlinx.android.synthetic.main.activity_admin_room.*
 import kotlinx.android.synthetic.main.fragment_cards.*
 import kotlinx.android.synthetic.main.fragment_cards.listCards
@@ -40,8 +43,6 @@ import kotlin.random.Random
 
 class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
-    // Objet gerant la connexion entre les devices
-    lateinit var network: MySalut
     // Login utilisé pour la communication entre devices
     lateinit var login: String
     // Liste des devices connecté
@@ -114,20 +115,9 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     // La demande de permissions a été un succès, on continue
     private fun onRequestSuccess() {
 
-        val dataReceiver = SalutDataReceiver(this, this)
-        val serviceData = SalutServiceData("CustomCardGame", 50488, login)
+        SingletonNetwork.createNetwork(this, login, true)
 
-        // Création du salon en tant qu'hôte
-        network = MySalut(dataReceiver, serviceData, SalutCallback {
-            Log.d(
-                this.javaClass.simpleName,
-                "Sorry, but this device does not support WiFi Direct."
-            )
-        })
-        network.isRunningAsHost = true
-
-        // Quand un device se connecte, on l'ajoute à la liste des utilisateurs
-        network.startNetworkService { device ->
+        SingletonNetwork.createRoom { device ->
             Log.d(
                 this.javaClass.simpleName,
                 device.readableName + " has connected!"
@@ -158,7 +148,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     override fun onStop() {
         super.onStop()
 
-        network.stopNetworkService(false)
+        SingletonNetwork.stopNetwork()
     }
 
     // Quand on reçoie des infos d'autres dispositifs
@@ -220,7 +210,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
                             val index = Random.nextInt(0, attributionDevice.size)
 
-                            network.sendToDevice(attributionDevice[index], salutCard) {
+                            SingletonNetwork.sendToDevice(attributionDevice[index], salutCard) {
                                 Log.e(
                                     javaClass.simpleName,
                                     "Can't send card to device " + attributionDevice[index].instanceName
