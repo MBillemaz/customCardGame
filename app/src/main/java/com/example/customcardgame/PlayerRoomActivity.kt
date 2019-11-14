@@ -80,9 +80,6 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     }
 
     fun onRequestSuccess() {
-        val dataReceiver = SalutDataReceiver(this, this)
-        val serviceData = SalutServiceData("CustomCardGame", 50488, login)
-
         // Affiche une dialog qui montre les devices trouvés
         val builderSingle = AlertDialog.Builder(this)
         builderSingle.setIcon(android.R.drawable.list_selector_background)
