@@ -32,7 +32,7 @@ import kotlin.random.Random
 
 // https://github.com/incognitorobito/Salut#usage
 
-class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
+class AdminRoomActivity : AppCompatActivity() {
 
     // Login utilisé pour la communication entre devices
     lateinit var login: String
@@ -40,11 +40,6 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     lateinit var customCardAdapter: CustomHostCardsAdapter
     // Récupère la database
     lateinit var db: CardDatabase
-
-    // Toutes les cartes mises dans la partie
-    lateinit var allCardsInGame: ArrayList<SalutCard>
-    // Tous les joueurs avec la cartes qu'ils ont d'affecté
-    lateinit var allPlayerWithRole: ArrayList<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,7 +101,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
         SingletonNetwork.createNetwork(this, login, true)
 
-        SingletonNetwork.createRoom { device ->
+        SingletonNetwork.createRoom({ device ->
             Log.d(
                 this.javaClass.simpleName,
                 device.readableName + " has connected!"
@@ -117,7 +112,20 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
             numberPlayer.text = getString(R.string.numberOfPlayer, SingletonNetwork.deviceList.size.toString())
             playerListText.text = getString(
                 R.string.playerNames,
-                SingletonNetwork.deviceList.map<SalutDevice, String> { it.readableName }.joinToString()
+                SingletonNetwork.deviceList.keys.joinToString()
+            )
+        }) { device ->
+            Log.d(
+                this.javaClass.simpleName,
+                device.readableName + " has disconnected !"
+            )
+
+            SingletonNetwork.addDevice(device)
+
+            numberPlayer.text = getString(R.string.numberOfPlayer, SingletonNetwork.deviceList.size.toString())
+            playerListText.text = getString(
+                R.string.playerNames,
+                SingletonNetwork.deviceList.keys.joinToString()
             )
         }
     }
@@ -133,45 +141,31 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
     }
 
-    // Lorsque l'on quitte la page
-    override fun onStop() {
-        super.onStop()
-
-        SingletonNetwork.stopNetwork()
-    }
-
-    // Quand on reçoie des infos d'autres dispositifs
-    // Pour le moment, l'admin ne doit pas recevoir de données des joueurs, cette fonction est donc inutile
-    override fun onDataReceived(p0: Any?) {
-    }
-
-
     // Ajout d'un élément pour simuler la connexion d'un autre préiphérique. Utilisé uniquememnt pour le déboguage
-    fun addGhostDevice(): SalutDevice {
+    fun addGhostDevice(number: Int): ArrayList<SalutDevice> {
 
-        var device = SalutDevice()
-        device.readableName = "Ghost player"
-        return device
+        val list = ArrayList<SalutDevice>()
+        for(i in 1..number) {
+            var device = SalutDevice()
+            device.readableName = "Ghost player $i"
+            list.add(device)
+        }
+        return list
     }
 
 
     // Lorsque l'hôte choisis de commencer la partie
-    fun onStartClick(view: View) {
+    fun onAssignRoleClick(view: View) {
 
         val deviceList = SingletonNetwork.deviceList
-        // A COMMENTER LORSQUE L'ON UTILISE D'AUTRES SMARTPHONES ANDROID
-        deviceList.add(addGhostDevice())
 
-        allCardsInGame = ArrayList()
-        allPlayerWithRole = ArrayList()
+        // A COMMENTER LORSQUE L'ON UTILISE D'AUTRES SMARTPHONES ANDROID
+        addGhostDevice(5).forEach { device -> deviceList.put(device.readableName, device) }
 
         // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
         // est égal au nombre de joueur
         if (deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
 
-            // On crée une liste de device qui sera vidée au fur et à mesure
-            val attributionDevice = ArrayList<SalutDevice>()
-            attributionDevice.addAll(deviceList)
 
             // Pour chaque set de carte
             customCardAdapter.dataSource.forEach { hostCard ->
@@ -191,40 +185,17 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
                         salutCard.picture = encodeImage(card!!.picture!!)
                     }
 
-                    // Cette carte est utilisée, elle devra être visible par les autres joueurs
-                    allCardsInGame.add(salutCard)
+                    SingletonNetwork.uniqueCardInGame.add(salutCard)
 
                     // On prend un utilisateur au hasard et on lui envoie la carte
-                    for (i in 0..counter) {
-                        if (attributionDevice.size > 0) {
-
-                            val index = Random.nextInt(0, attributionDevice.size)
-
-                            SingletonNetwork.sendToDevice(attributionDevice[index], salutCard) {
-
-                                try {
-                                    Log.e(
-                                        javaClass.simpleName,
-                                        "Can't send card to device " + attributionDevice[index].instanceName
-                                    )
-                                }
-                                catch (ex: Exception){
-
-                                }
-                            }
-
-                            allPlayerWithRole.add(attributionDevice[index].readableName + " - " + salutCard.cardName)
-
-                            // On supprime le device pour ne pas lui envoyer d'autre carte
-                            attributionDevice.removeAt(index)
-                        }
+                    for (i in 1..counter) {
+                        SingletonNetwork.allCardsInGame.add(salutCard)
                     }
                 }
             }
 
-            // Toutes les cartes ont été assignées et envoyées, on navigue vers la page pour montrer à l'admin les rôles assignés
-            val intent = Intent(this, HostPlayersRoleDetails::class.java)
-            intent.putExtra("PlayersRoles", allPlayerWithRole)
+
+            val intent = Intent(this, AssignRolesActivity::class.java)
             startActivity(intent)
 
         } else {
@@ -261,5 +232,10 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
             listCardsName.adapter = customCardAdapter
         }.start()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        SingletonNetwork.stopNetwork()
     }
 }

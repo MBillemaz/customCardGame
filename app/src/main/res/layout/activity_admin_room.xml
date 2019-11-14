@@ -47,7 +47,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="#00FF0000"
-        app:layout_constraintBottom_toTopOf="@+id/startButton"
+        app:layout_constraintBottom_toTopOf="@+id/assignRoles"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playerListText">
@@ -55,13 +55,13 @@
     </ListView>
 
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/assignRoles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:onClick="onStartClick"
-        android:text="Démarrer"
+        android:onClick="onAssignRoleClick"
+        android:text="Assigner les rôles"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

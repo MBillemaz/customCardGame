@@ -81,7 +81,10 @@ class PlayerRoomActivity : AppCompatActivity() {
         builderSingle.setIcon(android.R.drawable.list_selector_background)
         builderSingle.setTitle("Liste des salles trouvées")
 
-        builderSingle.setNegativeButton("Annuler") { dialog, which -> onBackPressed() }
+        builderSingle.setNegativeButton("Annuler") { dialog, which ->
+            SingletonNetwork.stopFindRoom()
+            onBackPressed()
+        }
 
         builderSingle.setAdapter(arrayAdapter) { _, which ->
                 val strName = arrayAdapter.getItem(which)
@@ -105,7 +108,7 @@ class PlayerRoomActivity : AppCompatActivity() {
     }
 
     // Fonction récursive
-    // On tente de se connecter cinq fois au device trouvé. Si cela échoue, envoie un message d'erreur à l'utilisateur
+    // On tente de se connecter dix fois au device trouvé. Si cela échoue, envoie un message d'erreur à l'utilisateur
     fun connectToHost(device: SalutDevice, iteration: Int = 0) {
         SingletonNetwork.joinRoom(
             device,
@@ -118,7 +121,7 @@ class PlayerRoomActivity : AppCompatActivity() {
                 waitCard()
             },
             SalutCallback {
-                if(iteration < 5) {
+                if(iteration < 10) {
                     textView.text = "iteration ${iteration}"
                     connectToHost(device, iteration + 1)
                 } else {

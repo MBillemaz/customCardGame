@@ -1,7 +1,9 @@
 package com.example.customcardgame.wifi
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.wifi.WifiManager
+import android.nfc.Tag
 import android.util.Log
 import com.bluelinelabs.logansquare.LoganSquare
 import com.example.customcardgame.Entities.SalutCard
@@ -20,10 +22,13 @@ object SingletonNetwork: SalutDataCallback {
     lateinit var network: MySalut
 
     // Liste des devices connecté
-    val deviceList: ArrayList<SalutDevice> = ArrayList()
+    val deviceList: MutableMap<String, SalutDevice> = mutableMapOf()
 
     // Toutes les cartes mises dans la partie
-    lateinit var allCardsInGame: ArrayList<SalutCard>
+    var allCardsInGame: ArrayList<SalutCard> = ArrayList()
+
+    // Toutes les cartes mises dans la partie
+    var uniqueCardInGame: ArrayList<SalutCard> = ArrayList()
 
     var assignedCard: SalutCard? = null
 
@@ -56,8 +61,13 @@ object SingletonNetwork: SalutDataCallback {
     }
 
     // Créer un salon en wifi direct
-    fun createRoom(callback: (device: SalutDevice) -> Unit) {
-        network.startNetworkService(callback)
+    fun createRoom(registerCallback: (device: SalutDevice) -> Unit, unregisterCallback: (device: SalutDevice) -> Unit) {
+        network.startNetworkService(
+            registerCallback,
+            { Log.d(TAG, "Network service started")},
+            { Log.d(TAG, "Network service failed")}
+        )
+        network.setOnDeviceUnregisteredCallback(unregisterCallback)
     }
 
     // Envoie un message à un device
@@ -70,6 +80,10 @@ object SingletonNetwork: SalutDataCallback {
         network.discoverNetworkServices(callback, callContinuously)
     }
 
+    fun stopFindRoom() {
+        network.stopServiceDiscovery(true)
+    }
+
     // Rejoint un salon existant
     fun joinRoom(device: SalutDevice, onSuccess: SalutCallback, onFailure: SalutCallback) {
         network.registerWithHost(device, onSuccess, onFailure)
@@ -77,7 +91,12 @@ object SingletonNetwork: SalutDataCallback {
 
     // Ajoute un device à la liste des clients
     fun addDevice(device: SalutDevice) {
-        deviceList.add(device)
+        deviceList.put(device.readableName, device)
+    }
+
+    // Ajoute un device à la liste des clients
+    fun removeDevice(device: SalutDevice) {
+        deviceList.remove(device.readableName)
     }
 
 
