@@ -211,10 +211,16 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
                             val index = Random.nextInt(0, attributionDevice.size)
 
                             SingletonNetwork.sendToDevice(attributionDevice[index], salutCard) {
-                                Log.e(
-                                    javaClass.simpleName,
-                                    "Can't send card to device " + attributionDevice[index].instanceName
-                                )
+
+                                try {
+                                    Log.e(
+                                        javaClass.simpleName,
+                                        "Can't send card to device " + attributionDevice[index].instanceName
+                                    )
+                                }
+                                catch (ex: Exception){
+
+                                }
                             }
 
                             allPlayerWithRole.add(attributionDevice[index].readableName + " - " + salutCard.cardName)
@@ -232,6 +238,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
             startActivity(intent)
 
         } else {
+
             // Affiche un message d'erreur
             val builderSingle = AlertDialog.Builder(this)
 

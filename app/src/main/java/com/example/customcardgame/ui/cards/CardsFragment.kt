@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.fragment_cards.view.*
 
 class CardsFragment : Fragment() {
 
-//    private lateinit var cardsViewModel: CardsViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
