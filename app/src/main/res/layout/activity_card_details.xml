@@ -34,10 +34,10 @@
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtCardName" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTitleCardName" />
 
         <TextView
-            android:id="@+id/txtDescription"
+            android:id="@+id/txtTitleDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -61,7 +61,7 @@
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTitleDescription" />
 
         <TextView
             android:id="@+id/txtImage"

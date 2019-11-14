@@ -21,6 +21,7 @@ import com.peak.salut.SalutDevice
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.wifi.WifiManager
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
 import android.util.Base64
@@ -35,6 +36,7 @@ import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
 import com.example.customcardgame.wifi.SingletonNetwork
 import kotlinx.android.synthetic.main.activity_admin_room.*
+import kotlinx.android.synthetic.main.activity_host_players_role_details.*
 import kotlinx.android.synthetic.main.fragment_cards.*
 import kotlinx.android.synthetic.main.fragment_cards.listCards
 import kotlin.random.Random
