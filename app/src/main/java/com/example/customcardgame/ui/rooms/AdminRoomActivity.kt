@@ -145,10 +145,26 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     override fun onDataReceived(p0: Any?) {
     }
 
+
+    // Ajout d'un élément pour simuler la connexion d'un autre préiphérique. Utilisé uniquememnt pour le déboguage
+    fun addGhostDevice(): SalutDevice {
+
+        var device = SalutDevice()
+        device.readableName = "Ghost player"
+        return device
+    }
+
+
     // Lorsque l'hôte choisis de commencer la partie
     fun onStartClick(view: View) {
 
         val deviceList = SingletonNetwork.deviceList
+        // A COMMENTER LORSQUE L'ON UTILISE D'AUTRES SMARTPHONES ANDROID
+        deviceList.add(addGhostDevice())
+
+        allCardsInGame = ArrayList()
+        allPlayerWithRole = ArrayList()
+
         // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
         // est égal au nombre de joueur
         if (deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {
@@ -185,10 +201,16 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
                             val index = Random.nextInt(0, attributionDevice.size)
 
                             SingletonNetwork.sendToDevice(attributionDevice[index], salutCard) {
-                                Log.e(
-                                    javaClass.simpleName,
-                                    "Can't send card to device " + attributionDevice[index].instanceName
-                                )
+
+                                try {
+                                    Log.e(
+                                        javaClass.simpleName,
+                                        "Can't send card to device " + attributionDevice[index].instanceName
+                                    )
+                                }
+                                catch (ex: Exception){
+
+                                }
                             }
 
                             allPlayerWithRole.add(attributionDevice[index].readableName + " - " + salutCard.cardName)
@@ -206,6 +228,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
             startActivity(intent)
 
         } else {
+
             // Affiche un message d'erreur
             val builderSingle = AlertDialog.Builder(this)
 

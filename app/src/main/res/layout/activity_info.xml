@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/TitleMain"
+            android:id="@+id/titleMain"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/DescriptionMain"
+            android:id="@+id/descriptionMain"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -38,10 +38,10 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TitleMain" />
+            app:layout_constraintTop_toBottomOf="@+id/titleMain" />
 
         <TextView
-            android:id="@+id/TitleHowToUse"
+            android:id="@+id/titleHowToUse"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -52,10 +52,10 @@
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/DescriptionMain" />
+            app:layout_constraintTop_toBottomOf="@+id/descriptionMain" />
 
         <TextView
-            android:id="@+id/SubTitleCreateCards"
+            android:id="@+id/subTitleCreateCards"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -63,10 +63,10 @@
             android:text="@string/sub_title_create_cards"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TitleHowToUse" />
+            app:layout_constraintTop_toBottomOf="@+id/titleHowToUse" />
 
         <TextView
-            android:id="@+id/DescriptionCreateCards"
+            android:id="@+id/descriptionCreateCards"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -77,10 +77,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/SubTitleCreateCards" />
+            app:layout_constraintTop_toBottomOf="@+id/subTitleCreateCards" />
 
         <TextView
-            android:id="@+id/SubTitleCreateRoom"
+            android:id="@+id/subTitleCreateRoom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -88,10 +88,10 @@
             android:text="@string/sub_title_create_room"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/DescriptionCreateCards" />
+            app:layout_constraintTop_toBottomOf="@+id/descriptionCreateCards" />
 
         <TextView
-            android:id="@+id/DescriptionJoinRoom"
+            android:id="@+id/descriptionJoinRoom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -101,7 +101,31 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/SubTitleCreateRoom" />
+            app:layout_constraintTop_toBottomOf="@+id/subTitleCreateRoom" />
+
+        <TextView
+            android:id="@+id/subTitleInGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/sub_title_in_game"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionJoinRoom" />
+
+        <TextView
+            android:id="@+id/descriptionInGame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/description_in_game"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subTitleInGame" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
