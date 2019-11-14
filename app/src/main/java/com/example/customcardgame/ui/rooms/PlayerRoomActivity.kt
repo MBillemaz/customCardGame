@@ -1,15 +1,11 @@
-package com.example.customcardgame
+package com.example.customcardgame.ui.rooms
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.customcardgame.wifi.MySalut
 import com.peak.salut.Callbacks.SalutDataCallback
-import com.peak.salut.SalutDataReceiver
-import com.peak.salut.SalutServiceData
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.bluelinelabs.logansquare.LoganSquare
@@ -18,15 +14,15 @@ import com.example.customcardgame.ui.play.PlayerGameActivity
 import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
 import kotlinx.android.synthetic.main.activity_player_room.*
-import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import com.example.customcardgame.R
 import com.example.customcardgame.wifi.SingletonNetwork
 
 
-class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
+class PlayerRoomActivity : AppCompatActivity() {
 
     // Login utilisé pour la communication
     lateinit var login: String
@@ -119,6 +115,7 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
                     "Registered !"
                 )
                 textView.text = "Connecté à ${device.instanceName} \n En attente du début de la partie"
+                waitCard()
             },
             SalutCallback {
                 if(iteration < 5) {
@@ -132,26 +129,25 @@ class PlayerRoomActivity : AppCompatActivity(), SalutDataCallback {
     }
 
 
+    // Créer un thread chargé de surveiller la présence d'une carte assignée dans le SingletonNetwork
     // Lors du début de la partie, le MJ va envoyer une carte à l'utilisateur
     // On parse les données reçues, on les transforme en objet SalutCard
     // On stocke l'image dans un fichier local et on lance la PlayerGameActivity
-    override fun onDataReceived(data: Any) {
-        Log.d(javaClass.simpleName, "Nouvelles données :")
-       try {
-           val card: SalutCard = LoganSquare.parse(data.toString(), SalutCard::class.java)
-           val intent = Intent(this, PlayerGameActivity::class.java)
-           intent.putExtra("cardName", card!!.cardName)
-           intent.putExtra("cardDesc", card!!.description)
+    fun waitCard() {
+        Thread {
+            while(SingletonNetwork.assignedCard == null) {
 
-           val file = File(filesDir, fileName)
-           file.writeText(card!!.picture)
+            }
+            val card = SingletonNetwork.assignedCard
+            val intent = Intent(this, PlayerGameActivity::class.java)
+            intent.putExtra("cardName", card!!.cardName)
+            intent.putExtra("cardDesc", card!!.description)
 
-           startActivity(intent)
-       }
-       catch (ex: IOException)
-       {
-           Log.e(this.javaClass.simpleName, "Failed to parse network data.");
-       }
+            val file = File(filesDir, fileName)
+            file.writeText(card!!.picture)
+
+            startActivity(intent)
+        }
     }
 
 }

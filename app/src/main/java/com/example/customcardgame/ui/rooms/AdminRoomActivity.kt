@@ -1,4 +1,4 @@
-package com.example.customcardgame
+package com.example.customcardgame.ui.rooms
 
 import android.Manifest
 import android.content.Context
@@ -7,35 +7,26 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.peak.salut.Callbacks.SalutDataCallback
-import com.peak.salut.SalutServiceData
-import com.peak.salut.SalutDataReceiver
-import com.example.customcardgame.wifi.MySalut
 import android.util.Log
 import android.widget.ListView
 import androidx.core.app.ActivityCompat
 import androidx.room.Room
 import com.example.customcardgame.Database.CardDatabase
 import com.example.customcardgame.Entities.SalutCard
-import com.peak.salut.Callbacks.SalutCallback
 import com.peak.salut.SalutDevice
 import android.graphics.Bitmap
 import android.net.Uri
-import android.net.wifi.WifiManager
 import android.provider.MediaStore
-import android.text.method.ScrollingMovementMethod
 import android.util.Base64
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.room.RoomDatabase
-import com.example.customcardgame.Entities.Card
+import com.example.customcardgame.HostPlayersRoleDetails
+import com.example.customcardgame.R
 import java.io.ByteArrayOutputStream
 import com.example.customcardgame.hostData.CustomHostCardsAdapter
 import com.example.customcardgame.hostData.HostCardsdata
 import com.example.customcardgame.wifi.SingletonNetwork
 import kotlinx.android.synthetic.main.activity_admin_room.*
-import kotlinx.android.synthetic.main.fragment_cards.*
 import kotlinx.android.synthetic.main.fragment_cards.listCards
 import kotlin.random.Random
 
@@ -45,8 +36,6 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
 
     // Login utilisé pour la communication entre devices
     lateinit var login: String
-    // Liste des devices connecté
-    val deviceList: ArrayList<SalutDevice> = ArrayList()
 
     lateinit var customCardAdapter: CustomHostCardsAdapter
     // Récupère la database
@@ -123,12 +112,12 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
                 device.readableName + " has connected!"
             )
 
-            deviceList.add(device)
+            SingletonNetwork.addDevice(device)
 
-            numberPlayer.text = getString(R.string.numberOfPlayer, deviceList.size.toString())
+            numberPlayer.text = getString(R.string.numberOfPlayer, SingletonNetwork.deviceList.size.toString())
             playerListText.text = getString(
                 R.string.playerNames,
-                deviceList.map<SalutDevice, String> { it.readableName }.joinToString()
+                SingletonNetwork.deviceList.map<SalutDevice, String> { it.readableName }.joinToString()
             )
         }
     }
@@ -159,6 +148,7 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     // Lorsque l'hôte choisis de commencer la partie
     fun onStartClick(view: View) {
 
+        val deviceList = SingletonNetwork.deviceList
         // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
         // est égal au nombre de joueur
         if (deviceList.size > 0 && deviceList.size == customCardAdapter.totalCardNumber) {

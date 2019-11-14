@@ -15,6 +15,10 @@
     <string name="menu_send">Send</string>
     <string name="menu_in_game">In Game</string>
 
+
+    <string name="create_room">Créer un salon</string>
+    <string name="join_room">Rejoindre un salon</string>
+
     <string name="login_key">LOGIN_KEY</string>
     <string name="notes_key">NOTES_KEY</string>
 
