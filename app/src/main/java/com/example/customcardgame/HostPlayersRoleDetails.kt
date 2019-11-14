@@ -8,5 +8,7 @@ class HostPlayersRoleDetails : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_host_players_role_details)
+
+
     }
 }

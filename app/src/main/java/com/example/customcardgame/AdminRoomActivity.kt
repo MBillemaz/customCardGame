@@ -166,8 +166,24 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     override fun onDataReceived(p0: Any?) {
     }
 
+
+    // Ajout d'un élément pour simuler la connexion d'un autre préiphérique. Utilisé uniquememnt pour le déboguage
+    fun addGhostDevice(): SalutDevice {
+
+        var device = SalutDevice()
+        device.readableName = "Ghost player"
+        return device
+    }
+
+
     // Lorsque l'hôte choisis de commencer la partie
     fun onStartClick(view: View) {
+
+        // A COMMENTER LORSQUE L'ON UTILISE D'AUTRES SMARTPHONES ANDROID
+        deviceList.add(addGhostDevice())
+
+        allCardsInGame = ArrayList()
+        allPlayerWithRole = ArrayList()
 
         // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
         // est égal au nombre de joueur
@@ -241,20 +257,22 @@ class AdminRoomActivity : AppCompatActivity(), SalutDataCallback {
     // Charge les cartes enregistrées avec bouttons + & - pour ajouter/enlever des cartes
     private fun setCardAdapter(context: Context, listCardsName: ListView) {
 
-        // Récupère tous les noms des cartes
-        var allCards = db.cardDao().findAll()
-        var listNames = ArrayList<HostCardsdata>(0)
+        Thread {
+            // Récupère tous les noms des cartes
+            var allCards = db.cardDao().findAll()
+            var listNames = ArrayList<HostCardsdata>(0)
 
-        // Pour chaque nom on l'enregistre dans l'adapter
-        allCards.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it.cardName }))
-            .forEach {
+            // Pour chaque nom on l'enregistre dans l'adapter
+            allCards.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it.cardName }))
+                .forEach {
 
-                listNames.add(HostCardsdata(it))
-            }
+                    listNames.add(HostCardsdata(it))
+                }
 
-        // On affiche l'adapter
-        customCardAdapter = CustomHostCardsAdapter(listNames, context)
+            // On affiche l'adapter
+            customCardAdapter = CustomHostCardsAdapter(listNames, context)
 
-        listCardsName.adapter = customCardAdapter
+            listCardsName.adapter = customCardAdapter
+        }.start()
     }
 }
