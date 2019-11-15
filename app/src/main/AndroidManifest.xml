@@ -19,16 +19,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.rooms.AssignRolesActivity"></activity>
-        <activity android:name=".HostPlayersRoleDetails" />
-        <activity android:name=".ui.info.InfoActivity" />
-        <activity android:name=".ui.play.PlayerGameActivity" />
-        <activity android:name=".ui.cardDetails.CardDetails" />
-        <activity android:name=".ui.rooms.PlayerRoomActivity" />
-        <activity android:name=".ui.rooms.AdminRoomActivity" />
+        <activity android:name=".ui.rooms.AssignRolesActivity"
+            android:screenOrientation="portrait"
+            ></activity>
+        <activity android:name=".HostPlayersRoleDetails"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.info.InfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.play.PlayerGameActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.cardDetails.CardDetails"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.rooms.PlayerRoomActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.rooms.AdminRoomActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

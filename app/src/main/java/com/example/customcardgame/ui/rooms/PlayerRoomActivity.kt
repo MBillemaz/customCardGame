@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,8 @@ class PlayerRoomActivity : AppCompatActivity() {
         setTheme(android.R.style.ThemeOverlay_Material_Dark)
         setContentView(R.layout.activity_player_room)
 
+        progressBar.visibility = View.GONE
+
         login = intent.getStringExtra("login")
         
         arrayAdapter = ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice)
@@ -69,29 +72,34 @@ class PlayerRoomActivity : AppCompatActivity() {
                 && grantResults[3] == PackageManager.PERMISSION_GRANTED
                 && grantResults[4] == PackageManager.PERMISSION_GRANTED)
             {
-                onRequestSuccess()
+                SingletonNetwork.createNetwork(this, login, false)
+                searchRoom()
             }
         }
     }
 
-    fun onRequestSuccess() {
+    fun onSearchRoomButtonClick(view: View) {
+        searchRoom()
+    }
+
+
+    fun searchRoom() {
         // Affiche une dialog qui montre les devices trouvés
-        val builderSingle = AlertDialog.Builder(this)
+        val builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dialog_Alert)
         builderSingle.setIcon(android.R.drawable.list_selector_background)
         builderSingle.setTitle("Liste des salles trouvées")
 
         builderSingle.setNegativeButton("Annuler") { dialog, which ->
             SingletonNetwork.stopFindRoom()
-            onBackPressed()
         }
 
         builderSingle.setAdapter(arrayAdapter) { _, which ->
-                val strName = arrayAdapter.getItem(which)
-                connectToHost(deviceList[which])
-            }
+            val strName = arrayAdapter.getItem(which)
+            connectToHost(deviceList[which])
+        }
         builderSingle.show()
 
-        SingletonNetwork.createNetwork(this, login, false)
+
 
         // Dés qu'on trouve un device, on essaye de s'y connecter
         SingletonNetwork.findRoom(true) { device ->
@@ -117,6 +125,7 @@ class PlayerRoomActivity : AppCompatActivity() {
                     "Registered !"
                 )
                 textView.text = "Connecté à ${device.instanceName} \n En attente du début de la partie"
+                progressBar.visibility = View.VISIBLE
                 waitCard()
             },
             SalutCallback {
@@ -151,7 +160,7 @@ class PlayerRoomActivity : AppCompatActivity() {
 
             gameStarted = true
             startActivity(intent)
-        }
+        }.start()
     }
 
     // Lorsque l'on revient sur cette activité depuis la page suivante, on va directement vers l'écran principal

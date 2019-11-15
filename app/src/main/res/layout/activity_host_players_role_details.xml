@@ -104,8 +104,8 @@
 
                 <ImageView
                     android:id="@+id/imgCard"
-                    android:layout_width="211dp"
-                    android:layout_height="207dp"
+                    android:layout_width="299dp"
+                    android:layout_height="366dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"

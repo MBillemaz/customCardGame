@@ -69,12 +69,20 @@ class AssignRolesActivity : AppCompatActivity() {
                 -1
             ) { dialog, which ->
                 val player = adapter.getItem(position)!!.split(" - ")[0]
-                val card = attributionCards.get(which)
+
+                val oldCard = deviceWithRole[player]!!
+                val card = attributionCards[which]
 
                 // Assigne la carte au joueur, supprime les deux des listes attribuables
                 deviceWithRole[player] = card
                 attributionCards.removeAt(which)
-                attributionDevice.removeAt(position)
+                attributionDevice.remove(player)
+
+                //Si le joueur avait déjà une carte affectée, on remet la carte dans la liste des cartes
+                // a affecter
+                if(oldCard.cardName != "") {
+                    attributionCards.add(oldCard)
+                }
 
                 // mets à jour la liste
                 adapter.clear()
