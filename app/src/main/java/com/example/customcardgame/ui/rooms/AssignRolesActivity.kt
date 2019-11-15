@@ -2,6 +2,7 @@ package com.example.customcardgame.ui.rooms
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
@@ -64,7 +65,7 @@ class AssignRolesActivity : AppCompatActivity() {
             // Ouvre une modale avec la liste des cartes. Lors du clic sur une des cartes,
             // La modale se ferme et la carte est assignée
             builderSingle.setSingleChoiceItems(
-                attributionCards.map { card -> card.cardName }.toTypedArray(),
+                attributionCards.map { card -> Html.fromHtml("<font color='#FF7F27'>" + card.cardName + "</font>") }.toTypedArray(),
                 -1
             ) { dialog, which ->
                 val player = adapter.getItem(position)!!.split(" - ")[0]
