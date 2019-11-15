@@ -3,6 +3,7 @@ package com.example.customcardgame
 
 import android.graphics.BitmapFactory
 import android.graphics.Point
+import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
@@ -70,20 +71,14 @@ class HostPlayersRoleDetails : AppCompatActivity() {
                 var card = db.cardDao().findByName(cardName)
                 var cardDescription = card?.description
 
-                if (card?.picture != null) {
-
-                    val decodedString = Base64.decode(card.picture, Base64.DEFAULT)
-                    val decodedByte =
-                        BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-                    imgCard.setImageBitmap(decodedByte)
-                }
-
 
                 runOnUiThread {
                     txtPlayerName.text = playerName
                     txtCardName.text = cardName
                     txtDescription.text = cardDescription
-
+                    if (card?.picture != null) {
+                        imgCard.setImageURI(Uri.parse(card.picture))
+                    }
                     // On cache l'écran précédent
                     roleDetailsLayout.visibility = View.VISIBLE
                     listCards.visibility = View.INVISIBLE
