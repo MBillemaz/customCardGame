@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.nav_home,
                 R.id.nav_cards,
-                R.id.nav_notes,
-                R.id.nav_in_game
+                R.id.nav_notes
             ), drawerLayout
         )
 

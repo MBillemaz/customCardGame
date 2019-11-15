@@ -3,4 +3,18 @@
     <color name="colorPrimary">#D84315</color>
     <color name="colorPrimaryDark">#BF360C</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="DeepOrange50">#FBE9E7</color>
+    <color name="DeepOrange100">#FFCCBC</color>
+    <color name="DeepOrange200">#FFAB91</color>
+    <color name="DeepOrange300">#FF8A65</color>
+    <color name="DeepOrange400">#FF7043</color>
+    <color name="DeepOrange500">#FF5722</color>
+    <color name="DeepOrange600">#F4511E</color>
+    <color name="DeepOrange700">#E64A19</color>
+    <color name="DeepOrange800">#D84315</color>
+    <color name="DeepOrange900">#BF360C</color>
+    <color name="DeepOrangeA100">#FF9E80</color>
+    <color name="DeepOrangeA200">#FF6E40</color>
+    <color name="DeepOrangeA400">#FF3D00</color>
+    <color name="DeepOrangeA700">#DD2C00</color>
 </resources>
