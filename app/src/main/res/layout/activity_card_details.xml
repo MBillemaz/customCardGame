@@ -83,6 +83,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:adjustViewBounds="true"
+            android:contentDescription="Image de la carte"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintEnd_toEndOf="parent"
