@@ -76,7 +76,7 @@ class PlayerGameActivity : AppCompatActivity() {
 
                 val oa1 = ObjectAnimator.ofFloat(backImage, "y",backImage.bottom.toFloat(), backImageInitialTop.toFloat())
                 oa1.interpolator = DecelerateInterpolator()
-                oa1.setDuration(300);
+                oa1.setDuration(300)
                 oa1.start()
             }
             false

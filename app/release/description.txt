@@ -1,0 +1,5 @@
+Tu te sens créatif et tu es un adepte des jeux de rôles comme le loup-garou ? 
+
+Cette application va te permettre de créer tes propres cartes et de jouer avec tes amis.
+Crée un salon, choisis les cartes et assigne les (manuellement ou automatiquement) aux joueurs.
+Lance la partie, laisse les découvrir les cartes et laisse parler tes talents de Maitre du jeu.

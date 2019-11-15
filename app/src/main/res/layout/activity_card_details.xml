@@ -7,7 +7,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".ui.cardDetails.CardDetails">
 
         <TextView
@@ -17,11 +17,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:labelFor="@+id/edtCardName"
             android:text="Nom de la carte"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edtCardName"
@@ -43,11 +45,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
+            android:labelFor="@+id/edtDescription"
             android:text="Description de la carte"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edtCardName" />
+            app:layout_constraintTop_toBottomOf="@+id/edtCardName"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edtDescription"
@@ -73,7 +77,8 @@
             android:text="Image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edtDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/edtDescription"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -101,7 +106,8 @@
             android:text="Annuler"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+            app:layout_constraintTop_toBottomOf="@+id/imageButton"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/btnValid"
@@ -113,6 +119,7 @@
             android:text="Valider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+            app:layout_constraintTop_toBottomOf="@+id/imageButton"
+            tools:ignore="HardcodedText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

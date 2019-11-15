@@ -130,7 +130,7 @@ class PlayerRoomActivity : AppCompatActivity() {
             },
             SalutCallback {
                 if(iteration < 10) {
-                    textView.text = "iteration ${iteration}"
+                    textView.text = "iteration $iteration"
                     connectToHost(device, iteration + 1)
                 } else {
                     textView.text = "Cannot connect to host..."

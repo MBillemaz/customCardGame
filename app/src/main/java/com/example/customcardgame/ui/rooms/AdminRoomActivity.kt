@@ -162,7 +162,7 @@ class AdminRoomActivity : AppCompatActivity() {
         val deviceList = SingletonNetwork.deviceList
 
         // A COMMENTER LORSQUE L'ON UTILISE D'AUTRES SMARTPHONES ANDROID
-        addGhostDevice(5).forEach { device -> deviceList.put(device.readableName, device) }
+        // addGhostDevice(5).forEach { device -> deviceList.put(device.readableName, device) }
 
         // La partie ne peut démarrer que si on a au moins un joueur et que le nombre de carte
         // est égal au nombre de joueur

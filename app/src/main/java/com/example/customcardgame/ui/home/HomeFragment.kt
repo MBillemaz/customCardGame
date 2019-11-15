@@ -90,7 +90,7 @@ class HomeFragment : Fragment() {
         val loginText = login.text.toString().trim()
 
         // Si l'utilisateur a mal écrit son login
-        if (loginText.isNullOrBlank()) {
+        if (loginText.isEmpty()) {
 
             // On affiche une erreur
             login.setError("Il faut un nom d'utilisateur.")

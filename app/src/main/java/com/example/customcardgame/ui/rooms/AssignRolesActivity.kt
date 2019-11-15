@@ -1,5 +1,6 @@
 package com.example.customcardgame.ui.rooms
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
@@ -62,15 +63,18 @@ class AssignRolesActivity : AppCompatActivity() {
             var builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dialog_Alert)
             builderSingle.setTitle("Choisir une carte à assigner")
 
+            val player = adapter.getItem(position)!!.split(" - ")[0]
+
+            val oldCard = deviceWithRole[player]!!
             // Ouvre une modale avec la liste des cartes. Lors du clic sur une des cartes,
             // La modale se ferme et la carte est assignée
             builderSingle.setSingleChoiceItems(
-                attributionCards.map { card -> Html.fromHtml("<font color='#FF7F27'>" + card.cardName + "</font>") }.toTypedArray(),
+                attributionCards
+                    .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, { it.cardName }))
+                    .map { card -> Html.fromHtml("<font color='#FF7F27'>" + card.cardName + "</font>") }.toTypedArray(),
                 -1
             ) { dialog, which ->
-                val player = adapter.getItem(position)!!.split(" - ")[0]
 
-                val oldCard = deviceWithRole[player]!!
                 val card = attributionCards[which]
 
                 // Assigne la carte au joueur, supprime les deux des listes attribuables
@@ -91,6 +95,21 @@ class AssignRolesActivity : AppCompatActivity() {
 
                 dialog.dismiss()
             }
+
+            if(oldCard.cardName != "") {
+                builderSingle.setNeutralButton("Enlever la carte", DialogInterface.OnClickListener() {
+                        dialog, which ->
+                    attributionCards.add(oldCard)
+                    attributionDevice.add(player)
+                    deviceWithRole[player] = SalutCard()
+
+                    // mets à jour la liste
+                    adapter.clear()
+                    adapter.addAll(deviceWithRole.map { (player, card) -> "$player - ${card.cardName}" })
+                    adapter.notifyDataSetChanged()
+                })
+            }
+
             builderSingle.show()
         }
 
