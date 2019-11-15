@@ -59,7 +59,7 @@ class AssignRolesActivity : AppCompatActivity() {
         // Quand on clique sur un utilisateur
         playerList.setOnItemClickListener { _, _, position, _ ->
 
-            var builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dark)
+            var builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dialog_Alert)
             builderSingle.setTitle("Choisir une carte à assigner")
 
             // Ouvre une modale avec la liste des cartes. Lors du clic sur une des cartes,

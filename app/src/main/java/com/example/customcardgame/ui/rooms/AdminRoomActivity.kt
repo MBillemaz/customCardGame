@@ -206,7 +206,7 @@ class AdminRoomActivity : AppCompatActivity() {
         } else {
 
             // Affiche un message d'erreur
-            val builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dark)
+            val builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dialog_Alert)
 
             builderSingle.setTitle("Erreur lors du lancement de la partie")
             builderSingle.setMessage("Le nombre de carte est différent du nombre de joueurs présents")

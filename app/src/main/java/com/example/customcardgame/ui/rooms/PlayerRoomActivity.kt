@@ -31,6 +31,8 @@ class PlayerRoomActivity : AppCompatActivity() {
 
     private lateinit var arrayAdapter: ArrayAdapter<String>
 
+    private var gameStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.ThemeOverlay_Material_Dark)
@@ -146,8 +148,18 @@ class PlayerRoomActivity : AppCompatActivity() {
             val file = File(filesDir, fileName)
             file.writeText(card!!.picture)
 
+
+            gameStarted = true
             startActivity(intent)
         }
     }
 
+    // Lorsque l'on revient sur cette activité depuis la page suivante, on va directement vers l'écran principal
+    override fun onResume() {
+        super.onResume()
+
+        if (gameStarted) {
+            onBackPressed()
+        }
+    }
 }
