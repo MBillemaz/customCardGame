@@ -2,13 +2,14 @@ package com.example.customcardgame.ui.cards
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import com.example.customcardgame.Database.CardDatabase
@@ -33,7 +34,7 @@ class CardsFragment : Fragment() {
         root.fabAddCard.setOnClickListener {
 
             // On ajoute la carte
-            onClickAddCard(context!!/*, listCards, listItems*/)
+            onClickAddCard(context!!)
         }
 
         // Au click sur une carte
@@ -94,7 +95,7 @@ class CardsFragment : Fragment() {
 
 
 // Ajoute une carte dans la liste
-private fun onClickAddCard(context: Context/*, listCards: ListView, listItems: ArrayList<String>*/) {
+private fun onClickAddCard(context: Context) {
 
     openCardDetails(context, "")
 }

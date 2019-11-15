@@ -1,20 +1,19 @@
 package com.example.customcardgame
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.view.MenuItem
 import com.example.customcardgame.ui.info.InfoActivity
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(android.R.style.ThemeOverlay_Material_Dark)
         setContentView(R.layout.activity_main)
 
 
@@ -41,8 +41,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_cards,
                 R.id.nav_notes,
                 R.id.nav_in_game
-//                R.id.nav_share,
-//                R.id.nav_send
             ), drawerLayout
         )
 

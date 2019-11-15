@@ -6,9 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.example.customcardgame.Database.CardDatabase
 import com.example.customcardgame.Entities.Card
@@ -29,6 +29,7 @@ class CardDetails : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(android.R.style.ThemeOverlay_Material_Dark)
         setContentView(R.layout.activity_card_details)
 
 
@@ -73,13 +74,8 @@ class CardDetails : AppCompatActivity() {
         // Quand on clique sur le bouton pour annuler on ne valide pas les modifs
         btnCancel.setOnClickListener {
 
-            val intent = Intent(this, PlayerGameActivity::class.java)
-            intent.putExtra("cardName", card!!.cardName)
-            intent.putExtra("cardDesc", card!!.description)
-            intent.putExtra("cardImage", card!!.picture)
-            startActivity(intent)
             // On revient à l'écran précédent
-            // super.onBackPressed()
+             super.onBackPressed()
         }
 
         // Quand on clique sur le bouton pour valider on valide les modifs

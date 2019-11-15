@@ -7,15 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.example.customcardgame.AdminRoomActivity
-import com.example.customcardgame.PlayerRoomActivity
 import com.example.customcardgame.R
+import com.example.customcardgame.ui.rooms.AdminRoomActivity
+import com.example.customcardgame.ui.rooms.PlayerRoomActivity
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 
