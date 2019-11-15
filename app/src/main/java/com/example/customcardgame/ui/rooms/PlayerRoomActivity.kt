@@ -83,7 +83,7 @@ class PlayerRoomActivity : AppCompatActivity() {
 
     fun searchRoom() {
         // Affiche une dialog qui montre les devices trouvés
-        val builderSingle = AlertDialog.Builder(this)
+        val builderSingle = AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dialog_Alert)
         builderSingle.setIcon(android.R.drawable.list_selector_background)
         builderSingle.setTitle("Liste des salles trouvées")
 
@@ -156,7 +156,7 @@ class PlayerRoomActivity : AppCompatActivity() {
             file.writeText(card!!.picture)
 
             startActivity(intent)
-        }
+        }.start()
     }
 
 }
